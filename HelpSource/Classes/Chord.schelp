@@ -1,0 +1,89 @@
+class:: Chord
+summary:: Easily create a chord of notes
+related:: Classes/Scale
+categories:: Math, Tuning
+
+DESCRIPTION::
+Chord provides an easy way to create chords
+
+ClassMethods::
+
+method::new
+
+argument::root
+The root index of the chord (1-indexed). For example Chord(1) will be the I chord, and Chord(4) will be the iv chord.
+code::
+Chord(1).degrees // [0, 2, 4]
+Chord(4).degrees // [3, 5, 7]
+::
+
+argument::numNotes
+How many notes to include in the chord (defaults to 3).
+
+code::
+Chord(1).degrees // [0, 2, 4]
+Chord(1, 4).degrees // [0, 2, 4, 6]
+::
+
+argument::invert
+The N-th inversion of the chord. This number should not equal or exceed numNotes (it will still work, it will just transpose all notes up by an octave).
+
+code::
+Chord(1, invert:1).degrees; // [2, 4, 7]
+// is the same as
+Chord(1.1); // [2, 4, 7]
+::
+
+argument::voice
+Controls the voicing of the chord. This can be either an integer or an array of integers. Each of the (1-indexed) elements will be transposed up an octave. If the number is greater than the number of notes in the chord, it will find the mod-size note and double it (add a note to the chord an octave up).
+
+code::
+Chord(1).degrees // [0, 2, 4]
+Chord(1, voice:2).degrees // [0, 4, 9] it bumps the second degree up by an octave
+// 5 - 3 = 2, so voice of 5 will affect the second degree
+Chord(1, voice:5).degrees // [0, 2, 4, 9] double the second degree
+// This transposes the second degree (2 -> 9) and doubles the third degree (4 -> 11)
+Chord(1, voice:[2,6]).degrees // [0, 4, 9, 11]
+::
+
+argument::drop
+This is the opposite of voice. It will transpose the notes down an octave instead.
+
+code::
+Chord(1).degrees // [0, 2, 4]
+Chord(1, drop:2).degrees // [-5, 0, 9] it drops the second degree down an octave
+// 5 - 3 = 2, so drop of 5 will affect the second degree
+Chord(1, drop:5).degrees // [-5, 0, 2, 4] double & drop the second degree
+// This transposes the second degree (2 -> -5) and doubles the third degree (4 -> -3)
+Chord(1, drop:[2,6]).degrees // [-5, -3, 0, 4]
+::
+
+EXAMPLES::
+
+code::
+(
+Pbind(
+  \scale, Scale.minor,
+  \degree, Pseq([Chord(1.2),Chord(5),Chord(6),Chord(4.1)]).trace,
+  \strum, 0.05,
+).play;
+)
+
+// C can be used as a shortcut for Chord
+(
+Pbind(
+  \scale, Scale.minor,
+  \degree, Pseq([C(1.2),C(5),C(6),C(4.1)]).trace,
+  \strum, 0.05,
+).play;
+)
+
+// There is also a .chords() shortcut on Array
+(
+Pbind(
+  \scale, Scale.minor,
+  \degree, Pseq([C(1,voice:2),5,6,4.1].chords).trace,
+  \strum, 0.05,
+).play;
+)
+::
