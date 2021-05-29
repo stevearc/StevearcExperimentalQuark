@@ -8,24 +8,20 @@ FXDelayDataStore {
       this.process;
     }
   }
-
   quantize_ { |newval|
     quantize = newval;
     this.process;
   }
-
   delayTime_ { |newval|
     delayTime = newval;
     decayTime = max(decayTime, delayTime);
     this.process;
   }
-
   decayTime_ { |newval|
     decayTime = newval;
     delayTime = min(delayTime, decayTime);
     this.process;
   }
-
   decayMul_ { |newval|
     decayMul = newval;
     this.process;
@@ -60,8 +56,7 @@ FXDelayDataStore {
 }
 
 TouchFXDelay : TouchOSCResponder {
-  var <>delayTime=0.25, <>decayTime=2,
-    store, touchSynth, synth;
+  var store, touchSynth, synth;
 
   *new { |touchSynth|
     ^super.new.init(touchSynth);

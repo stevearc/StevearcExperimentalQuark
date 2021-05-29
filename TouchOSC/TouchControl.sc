@@ -26,19 +26,18 @@ TouchControl : TouchOSCResponder {
     });
     this.prAddFunc(path ++ "/z", { |msg|
       var newTouch = msg[1] != 0;
-      if (isTouching == newTouch) {
-        ^nil;
-      };
-      isTouching = newTouch;
-      if (isTouching) {
-        if (onTouchStart.notNil) {
-          onTouchStart.value();
+      if (isTouching != newTouch) {
+        isTouching = newTouch;
+        if (isTouching) {
+          if (onTouchStart.notNil) {
+            onTouchStart.value();
+          };
+        } {
+          if (onTouchEnd.notNil) {
+            onTouchEnd.value();
+          };
+          this.sync;
         };
-      } {
-        if (onTouchEnd.notNil) {
-          onTouchEnd.value();
-        };
-        this.sync;
       };
     });
   }

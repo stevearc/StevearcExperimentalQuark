@@ -1,11 +1,11 @@
 TouchSynth : TouchOSCResponder {
-  var <>name=\default, <>bus=0, <>defaultArgs=#[], <>fxdelay, <group;
+  var <>name=\default, <>bus=0, <>defaultArgs=#[], <group;
   *new {
     ^super.new.init;
   }
   init {
-    fxdelay = TouchFXDelay.new(this);
-    this.prAddChild(fxdelay);
+    this.prAddChild(TouchFXDelay.new(this));
+    this.prAddChild(TouchFXFilter.new(this));
   }
 
   play { |freq|
