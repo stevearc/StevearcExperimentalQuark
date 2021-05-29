@@ -171,16 +171,26 @@ Mixer {
       synth.set(\amp, amp);
     };
   }
+
+  record {|key, beats=4, quant=nil, countdown=5, layer=0, playback=false, callback|
+    Looper.record(key, beats, quant, bus, nil, countdown, layer, playback, callback);
+  }
+
+  makeLoop {|key, beats=4, quant=nil, countdown=5, layer=0|
+    Looper.record(key, beats, quant, bus, nil, countdown, layer, true, {
+      this.mute;
+    });
+  }
 }
 
 + ProxySpace {
-  playM {|index|
-    this.play(out: Mixer(index).bus);
+  playM {|index, numChannels=2, key=\out|
+    this.play(key, Mixer(index).bus, numChannels);
   }
 }
 
 + BusPlug {
-  playM {|index|
-    this.play(out: Mixer(index).bus);
+  playM {|index ...args|
+    this.play(Mixer(index).bus, *args);
   }
 }

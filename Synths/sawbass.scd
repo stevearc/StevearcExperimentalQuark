@@ -1,7 +1,7 @@
 (
 SynthDef(\sawbass, {
   |out=0, amp=0.1, pan=0, freq=440, atk=0.01, decay=0.1, rel=0.2, sustainLevel=0.5, cAtk=(-2), cDec=(-2), cRel=(-4), gate=1,
-  detune=0.001, lpfscale=2, freqFade=1, lpfscaleFade=1|
+  detune=0.001, lpfscale=2, freqFade=0, lpfscaleFade=0|
   var sig, env;
   freq = freq.varlag(freqFade);
   env = EnvGen.kr(
@@ -33,6 +33,7 @@ SynthDef(\sawbass, {
 
   sig = Splay.ar(sig * env, 0.7);
   sig = RLPF.ar(sig, lpfscale.varlag(lpfscaleFade)*freq*Linen.kr(gate,atk,1,rel,0),0.4);
-  Out.ar(out, sig*amp);
+  sig = Balance2.ar(sig[0], sig[1], pan, amp);
+  Out.ar(out, sig);
 }).add;
 )

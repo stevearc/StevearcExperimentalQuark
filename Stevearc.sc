@@ -1,5 +1,5 @@
 SA {
-  *setup {
+  *setup { |callback|
     var s = Server.default;
     var p;
     if (currentEnvironment.class != ProxySpace) {
@@ -8,8 +8,14 @@ SA {
     };
     SA.boot;
     s.waitForBoot({
-      SA.load;
-      Master.enable;
+      fork {
+        SA.load;
+        Master.enable;
+        if (callback.notNil) {
+          s.sync;
+          callback.value;
+        };
+      }
     });
   }
 
@@ -35,12 +41,17 @@ SA {
 
   *boot {
     var s = Server.default;
-    if (s.serverRunning) {
+    var memSize = 2 * (2**20); // 2 gigs
+    if (s.serverRunning and: (s.options.memSize == memSize)) {
       ^nil;
     };
-    s.options.memSize_(2 pow: 20);
+    s.options.memSize = memSize;
     s.options.numBuffers = 1024 * 16;
-    s.boot;
+    if (s.serverRunning) {
+      s.reboot;
+    } {
+      s.boot;
+    }
   }
 
   *getThisDir {
@@ -88,7 +99,7 @@ SA {
     // overdrive distortion FX
     Spec.specs[\drive] = ControlSpec(0, 5);
     // wa-wa FX
-    Spec.specs[\waCenter] = ControlSpec(200, 10000, \exp);
+    Spec.specs[\waCenter] = ControlSpec(40, 10000, \exp);
     Spec.specs[\waWidth] = ControlSpec(0, 0.8);
     Spec.specs[\waRate] = ControlSpec(0.1, 32, \exp);
     Spec.specs[\waRq] = ControlSpec(0.1, 5);
