@@ -5,7 +5,9 @@ TouchControl : TouchOSCResponder {
   }
   initTouchControl { |theStore, theKey, thePath, onChange, onTouchStart, onTouchEnd|
     store = theStore;
-    store.addDependant(this);
+    if (store.notNil) {
+      store.addDependant(this);
+    };
     key = theKey;
     path = thePath;
     this.onChange = onChange;
@@ -14,8 +16,11 @@ TouchControl : TouchOSCResponder {
   }
   preprocess { |value| ^value }
   postprocess { |value| ^value }
-  listen {
-    super.listen;
+  start {
+    super.start;
+    this.startImpl;
+  }
+  startImpl {
     this.prAddFunc(path, { |msg|
       var newval = this.preprocess(msg[1]);
       if (this.onChange.notNil) {
@@ -24,6 +29,9 @@ TouchControl : TouchOSCResponder {
         store.perform((key ++ '_').asSymbol, newval);
       };
     });
+    this.prAddTouchListener;
+  }
+  prAddTouchListener {
     this.prAddFunc(path ++ "/z", { |msg|
       var newTouch = msg[1] != 0;
       if (isTouching != newTouch) {
@@ -65,7 +73,13 @@ TouchControlLabel : TouchOSCResponder {
     path = thePath;
   }
   syncImpl {
-    clientAddr.sendMsg(path, store.perform(key));
+    var value;
+    if (key.isFunction) {
+      value = key.value(store);
+    } {
+      value = store.perform(key);
+    };
+    clientAddr.sendMsg(path, value);
   }
   update { |store, what|
     this.sync;
@@ -90,6 +104,35 @@ TouchControlButton : TouchControl {
   }
   // Don't send any info to the client
   syncImpl { }
+}
+
+TouchControlMultiButton : TouchControl {
+  var <>dimensions;
+  *new { |path, dimensions, onChange, onTouchStart, onTouchEnd|
+    ^super.new(nil, nil, path, onChange, onTouchStart, onTouchEnd).init(dimensions);
+  }
+  init { |dimensions|
+    this.dimensions = dimensions;
+  }
+  preprocess { |value|
+    ^(value != 0);
+  }
+  postprocess { |value|
+    ^value.asInteger;
+  }
+  // Don't send any info to the client
+  syncImpl { }
+  startImpl {
+    this.prAddTouchListener;
+    this.dimensions[0].do { |x|
+      this.dimensions[1].do { |y|
+        this.prAddFunc("%/%/%".format(path,y+1,x+1), { |msg|
+          var newval = this.preprocess(msg[1]);
+          this.onChange.value(newval, x, y);
+        });
+      };
+    };
+  }
 }
 
 TouchControlRange : TouchControl {

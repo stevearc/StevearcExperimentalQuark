@@ -18,35 +18,46 @@ TouchOSCResponder {
   }
   prAddChild { |responder|
     children = children.add(responder);
+    if (isListening) {
+      responder.start;
+    };
+  }
+  prClearChildren {
+    children.do { |c|
+      c.stop;
+    };
+    children = Array.new;
   }
 
-  sync {
-    children.do { |c|
-      c.sync(clientAddr);
+  sync { |recurse=true|
+    if (recurse) {
+      children.do { |c|
+        c.sync;
+      };
     };
     if (clientAddr.notNil) {
       this.syncImpl;
     };
   }
   syncImpl { }
-  listen {
+  start {
     if (this.isListening) {
-      this.free;
+      this.stop;
     };
     this.prAddFunc('/ping', { |msg, time, addr, port|
-      this.sync;
+      this.sync(false);
     });
     children.do { |c|
-      c.listen;
+      c.start;
     };
     isListening = true;
   }
-  free {
+  stop {
     children.do { |c|
-      c.free;
+      c.stop;
     };
     oscfuncs.do { |f|
-      f.free;
+      f.stop;
     };
     oscfuncs = Array.new;
     isListening = false;
