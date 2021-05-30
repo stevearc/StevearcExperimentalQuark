@@ -12,6 +12,7 @@ TouchPads : TouchOSCResponder {
     ui.store = store;
     this.prAddChild(ui);
     loopCtl = LoopController.new(store);
+    this.prAddChild(loopCtl);
   }
 
   selectedSynth {
@@ -29,13 +30,11 @@ TouchPads : TouchOSCResponder {
 
   start {
     super.start;
-    loopCtl.start;
     store.enabled = true;
   }
 
   stop {
     super.stop;
-    loopCtl.stop;
     store.enabled = false;
   }
 }

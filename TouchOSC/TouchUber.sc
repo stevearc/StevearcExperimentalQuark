@@ -28,7 +28,6 @@ TouchUber : TouchOSCResponder {
 
   *start { ^this.default.start }
   start {
-    var selectSynth;
     if (isListening) {
       ^this;
     };
@@ -41,14 +40,27 @@ TouchUber : TouchOSCResponder {
       keyboard.touchSynth = pads.selectedSynth;
       keyboard.start;
     };
-    selectSynth = {
-      keys.do { |keyboard|
-        keyboard.touchSynth = pads.selectedSynth;
-      };
-      fxboard.attach(pads.selectedSynth);
+    this.prAddFunc('/keys', {this.onPageChange('/keys')});
+    this.prAddFunc('/fx', {this.onPageChange('/fx')});
+    this.prAddFunc('/pads', {this.onPageChange('/pads')});
+  }
+
+  onPageChange { |page|
+    keys.do { |keyboard|
+      keyboard.touchSynth = pads.selectedSynth;
+      keyboard.sync(true, true);
     };
-    this.prAddFunc('/keys', selectSynth);
-    this.prAddFunc('/fx', selectSynth);
+    switch(page,
+      '/keys', {
+      },
+      '/fx', {
+        fxboard.attach(pads.selectedSynth);
+        fxboard.sync(true, true);
+      },
+      '/pads', {
+        pads.sync(true, true);
+      },
+    );
   }
 
   *stop { ^this.default.stop }

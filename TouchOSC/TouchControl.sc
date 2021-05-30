@@ -1,5 +1,5 @@
 TouchControl : TouchOSCResponder {
-  var <store, <key, <path, <>onChange, <>onTouchStart, <>onTouchEnd, <isTouching=false;
+  var <store, <key, <path, <>onChange, <>onTouchStart, <>onTouchEnd, <isTouching=false, clientValue;
   *new { |store, key, path, onChange, onTouchStart, onTouchEnd|
     ^super.new.initTouchControl(store, key, path, onChange, onTouchStart, onTouchEnd);
   }
@@ -23,6 +23,7 @@ TouchControl : TouchOSCResponder {
   startImpl {
     this.prAddFunc(path, { |msg|
       var newval = this.preprocess(msg[1]);
+      clientValue = newval;
       if (this.onChange.notNil) {
         this.onChange.value(newval);
       } {
@@ -49,20 +50,27 @@ TouchControl : TouchOSCResponder {
       };
     });
   }
-  syncImpl {
+  syncImpl { |forceUpdate|
     // Only update the control when we're not touching it
     if (isTouching.not) {
-      clientAddr.sendMsg(path, this.postprocess(store.perform(key)));
+      var value = store.perform(key);
+      if (value != clientValue or: forceUpdate) {
+        clientValue = value;
+        clientAddr.sendMsg(path, this.postprocess(value));
+      };
     };
   }
-
+  stop {
+    super.stop;
+    clientValue = nil;
+  }
   update { |store, what|
     this.sync;
   }
 }
 
 TouchControlLabel : TouchOSCResponder {
-  var <store, <key, <path;
+  var <store, <key, <path, clientValue;
   *new { |store, key, path|
     ^super.new.init(store, key, path);
   }
@@ -72,17 +80,24 @@ TouchControlLabel : TouchOSCResponder {
     key = theKey;
     path = thePath;
   }
-  syncImpl {
+  syncImpl { |forceUpdate|
     var value;
     if (key.isFunction) {
       value = key.value(store);
     } {
       value = store.perform(key);
     };
-    clientAddr.sendMsg(path, value);
+    if (value != clientValue or: forceUpdate) {
+      clientValue = value;
+      clientAddr.sendMsg(path, value);
+    }
   }
   update { |store, what|
     this.sync;
+  }
+  stop {
+    super.stop;
+    clientValue = nil;
   }
 }
 

@@ -29,17 +29,17 @@ TouchOSCResponder {
     children = Array.new;
   }
 
-  sync { |recurse=true|
+  sync { |recurse=true, forceUpdate=false|
     if (recurse) {
       children.do { |c|
-        c.sync;
+        c.sync(recurse, forceUpdate);
       };
     };
     if (clientAddr.notNil) {
-      this.syncImpl;
+      this.syncImpl(forceUpdate);
     };
   }
-  syncImpl { }
+  syncImpl { |forceUpdate=false| }
   start {
     if (this.isListening) {
       this.stop;

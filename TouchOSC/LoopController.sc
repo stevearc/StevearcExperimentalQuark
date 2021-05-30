@@ -22,29 +22,27 @@ LoopController : TouchOSCResponder {
       };
     });
     recording.events.do { |event|
-      var target;
-      if (store.quantize and: (event.type != \note_set)) {
-        if (store.bpm > 100) {
-          target = startBeat + event.beat.round(1/4);
-        } {
-          target = startBeat + event.beat.round(1/8);
-        };
-      } {
-        target = startBeat + event.beat
-      };
+      var target = startBeat + event.beat;
       TempoClock.schedAbs(target, {
         var touchSynth = padsStore.getSynth(event.synthName);
         if (touchSynth.notNil) {
+          var synth = synths[event.id];
           switch(event.type,
             \note_start, {
-              synths[event.id] = touchSynth.makeSynth(event.args);
+              synth = touchSynth.makeSynth(event.args);
+              synth.register(true);
+              synths[event.id] = synth;
             },
             \note_set, {
-              synths[event.id].set(*event.args);
+              if (synth.isRunning) {
+                synth.set(*event.args);
+              };
             },
             \note_end, {
-              synths[event.id].set(\gate, -1.1);
-              synths[event.id] = nil;
+              if (synth.notNil and: synth.isRunning) {
+                synths[event.id].set(\gate, -1.1);
+                synths[event.id] = nil;
+              };
             },
           );
         };
@@ -61,30 +59,36 @@ LoopController : TouchOSCResponder {
     }).add;
   }
 
+  startRecording {
+    var totalBeats = store.beatsPerBar * store.recordBars;
+    store.recordStartTime = TempoClock.nextTimeOnGrid(totalBeats, -1 * store.beatsPerBar)
+      + store.beatsPerBar;
+    TempoClock.schedAbs(TempoClock.nextTimeOnGrid(1), {
+      if (store.shouldRecord.not or: (store.recordTimeRemaining == 1)) {
+        store.finishRecording;
+        nil;
+      } {
+        if (TempoClock.beats < store.recordStartTime) {
+          store.recordTimeRemaining = TempoClock.beats - store.recordStartTime;
+        } {
+          store.recording = true;
+          store.recordTimeRemaining = totalBeats - (TempoClock.beats - store.recordStartTime);
+        };
+        if (store.recordTimeRemaining >= (-1 * store.beatsPerBar)) {
+          var amp = 0.1;
+          if (TempoClock.beats % store.beatsPerBar == 0) {
+            amp = 0.3;
+          };
+          Synth(\touchOSCMetronome, [\amp, amp]);
+        };
+        1;
+      };
+    });
+  }
+
   update { |store, what|
     if (store.shouldRecord and: store.recordStartTime.isNil) {
-      var totalBeats = store.beatsPerBar * store.recordBars;
-      store.recordStartTime = TempoClock.nextTimeOnGrid(totalBeats, -1 * store.beatsPerBar)
-        + store.beatsPerBar;
-      TempoClock.schedAbs(TempoClock.nextTimeOnGrid(1), {
-        var amp = 0.1;
-        if (TempoClock.beats % store.beatsPerBar == 0) {
-          amp = 0.3;
-        };
-        Synth(\touchOSCMetronome, [\amp, amp]);
-        if (store.shouldRecord.not or: (store.recordTimeRemaining == 1)) {
-          store.finishRecording;
-          nil;
-        } {
-          if (TempoClock.beats < store.recordStartTime) {
-            store.recordTimeRemaining = TempoClock.beats - store.recordStartTime;
-          } {
-            store.recording = true;
-            store.recordTimeRemaining = totalBeats - (TempoClock.beats - store.recordStartTime);
-          };
-          1;
-        };
-      });
+      this.startRecording;
     };
 
     if (store.recording) {

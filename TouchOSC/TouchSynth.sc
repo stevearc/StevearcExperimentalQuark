@@ -84,17 +84,17 @@ TouchSynth {
         synth.register(true);
         this.changed(\note_start, synth.nodeID, defaultArgs ++ args);
       } {
-        if (synth.isRunning) {
-          this.changed(\note_set, synth.nodeID, defaultArgs ++ args);
+        if (synth.isRunning and: args.notEmpty) {
+          this.changed(\note_set, synth.nodeID, args);
           synth.set(*args);
         }
       }
       ^synth;
     } {
       if (synth.notNil and: {synth.isRunning}) {
-        // Cut off after 100ms to avonodeID race conditions. If user plays a note
-        // fast enough we could end up setting the gate to 0 before it starts
-        // playing. In that case, the node will hang around and not free
+        // Cut off after 100ms to avoid nodeID race conditions. If user plays a
+        // note fast enough we could end up setting the gate to 0 before it
+        // starts playing. In that case, the node will hang around and not free
         // itself.
         synth.set(\gate, -1.1);
         this.changed(\note_end, synth.nodeID);
