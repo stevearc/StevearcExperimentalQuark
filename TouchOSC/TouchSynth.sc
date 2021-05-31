@@ -1,19 +1,3 @@
-// SynthDataStore {
-//   var <name=\default, <out=0, <>defaultArgs=#[],
-//     <delayStore, <filterStore, <reverbStore;
-//   *new {
-//     ^super.new.init;
-//   }
-//   init {
-//     name = theName;
-//     defaultArgs = theArgs;
-//     out = theOut;
-//     delayStore = FXDelayDataStore.new;
-//     filterStore = FXFilterDataStore.new;
-//     reverbStore = FXReverbDataStore.new;
-//   }
-// }
-
 TouchSynth {
   var <name, <synthName, <out, <>defaultArgs=#[], <group, <bus, <isRunning=false,
     <delayStore, <filterStore, <reverbStore,
@@ -172,11 +156,8 @@ TouchSynth {
     if (isRunning.not) {
       ^this;
     };
-    [group, delaySynth, filterSynth, reverbSynth, monitorSynth].do { |node|
-      if (node.notNil) {
-        node.free;
-      };
-    };
+    group.free;
+    bus.free;
     bus = nil;
     group = nil;
     delaySynth = nil;
