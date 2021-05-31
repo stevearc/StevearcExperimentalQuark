@@ -9,7 +9,7 @@ TouchUber.setPadSynth(1,3,TouchSynth('chime','prayerBell',[ 'freq', 2637.0204553
 TouchUber.setPadSynth(2,0,TouchSynth('gong','prayerBell',[ 'freq', 46.249302838954, 'amp', 0.1 ]));
 TouchUber.setPadSynth(2,1,TouchSynth('blip','blip',[  ]));
 TouchUber.setPadSynth(2,2,TouchSynth('blip1','blip1',[  ]));
-TouchUber.setPadSynth(2,3,TouchSynth('ikeda','ikedaBass',[ 'freq', 46.249302838954 ]));
+TouchUber.setPadSynth(2,3,TouchSynth('ikeda','ikedaBass',[  ]));
 TouchUber.setPadSynth(3,0,TouchSynth('hat','hihat1',[ 'rel', 0.13 ]));
 TouchUber.setPadSynth(3,1,TouchSynth('openhat','hihat1',[ 'rel', 0.4 ]));
 TouchUber.setPadSynth(3,2,TouchSynth('sizzle','purpleNoise',[  ]));

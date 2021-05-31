@@ -1,4 +1,5 @@
 TouchSynth {
+  classvar masterGroup;
   var <name, <synthName, <out=0, <>defaultArgs=#[], <group, <bus, <isRunning=false,
     <delayStore, <filterStore, <reverbStore,
     delaySynth, filterSynth, reverbSynth, monitorSynth;
@@ -109,7 +110,15 @@ TouchSynth {
     };
     isRunning = true;
     Task({
-      group = Group.new(Server.default, \addToTail);
+      if (masterGroup.isNil) {
+        masterGroup = Group.new(RootNode(Server.default), \addToTail);
+        Server.default.sync;
+        CmdPeriod.doOnce {
+          masterGroup.free;
+          masterGroup = nil;
+        };
+      };
+      group = Group.new(masterGroup, \addToTail);
       bus = Bus.audio(Server.default, 2);
       SynthDef(\touchOSCMonitor, {
         var sig = In.ar(\bus.kr(0), 2);
@@ -168,5 +177,18 @@ TouchSynth {
 
   storeOn { |stream|
     stream << "TouchSynth(" <<< name << "," <<< synthName << "," <<< defaultArgs << ")";
+  }
+
+  asEvent {
+    var ev = Event.new;
+    ev[\instrument] = synthName;
+    forBy (0, defaultArgs.size - 1, 2) { |i|
+      var key = defaultArgs[i];
+      var value = defaultArgs[i+1];
+      if (key != \freq) {
+        ev[key] = value;
+      };
+    };
+    ^ev;
   }
 }

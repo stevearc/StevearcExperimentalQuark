@@ -89,5 +89,16 @@ TouchUber : TouchOSCResponder {
     path.fullPath.load;
   }
 
+  *pSynth { |name| ^this.default.pSynth(name) }
+  pSynth { |name|
+    var synth = pads.store.getSynth(name);
+    ^Pn(synth.asEvent);
+  }
+
+  *synthBus { |name| ^this.default.synthBus(name) }
+  synthBus { |name|
+    ^pads.store.getSynth(name).bus;
+  }
+
   *stop { ^this.default.stop }
 }
