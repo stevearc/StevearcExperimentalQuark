@@ -1,0 +1,16 @@
+TouchUber.setPadSynth(0,0,TouchSynth('kick808','kick808',[  ]));
+TouchUber.setPadSynth(0,1,TouchSynth('ringz','kickRingz',[  ]));
+TouchUber.setPadSynth(0,2,TouchSynth('oto309','kick_oto309',[  ]));
+TouchUber.setPadSynth(0,3,TouchSynth('sos','sosKick',[  ]));
+TouchUber.setPadSynth(1,0,TouchSynth('snare','snare',[ 'amp', 0.3 ]));
+TouchUber.setPadSynth(1,1,TouchSynth('clap','clapOto309',[ 'rel', 0.4, 'amp', 0.2 ]));
+TouchUber.setPadSynth(1,2,TouchSynth('klank','klank',[  ]));
+TouchUber.setPadSynth(1,3,TouchSynth('chime','prayerBell',[ 'freq', 2637.020455303, 'amp', 0.05 ]));
+TouchUber.setPadSynth(2,0,TouchSynth('gong','prayerBell',[ 'freq', 46.249302838954, 'amp', 0.1 ]));
+TouchUber.setPadSynth(2,1,TouchSynth('blip','blip',[  ]));
+TouchUber.setPadSynth(2,2,TouchSynth('blip1','blip1',[  ]));
+TouchUber.setPadSynth(2,3,TouchSynth('ikeda','ikedaBass',[ 'freq', 46.249302838954 ]));
+TouchUber.setPadSynth(3,0,TouchSynth('hat','hihat1',[ 'rel', 0.13 ]));
+TouchUber.setPadSynth(3,1,TouchSynth('openhat','hihat1',[ 'rel', 0.4 ]));
+TouchUber.setPadSynth(3,2,TouchSynth('sizzle','purpleNoise',[  ]));
+TouchUber.setPadSynth(3,3,TouchSynth('sawbass','sawbass',[ 'freq', 92.498605677909 ]));

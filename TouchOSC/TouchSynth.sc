@@ -1,16 +1,15 @@
 TouchSynth {
-  var <name, <synthName, <out, <>defaultArgs=#[], <group, <bus, <isRunning=false,
+  var <name, <synthName, <out=0, <>defaultArgs=#[], <group, <bus, <isRunning=false,
     <delayStore, <filterStore, <reverbStore,
     delaySynth, filterSynth, reverbSynth, monitorSynth;
 
-  *new { |name=\default, synthName=\default, args=#[], out=0|
-    ^super.new.init(name, synthName, args, out);
+  *new { |name=\default, synthName=\default, args=#[]|
+    ^super.new.init(name, synthName, args);
   }
-  init { |theName, theSynthName, theArgs, theOut|
+  init { |theName, theSynthName, theArgs|
     name = theName;
     synthName = theSynthName;
     defaultArgs = theArgs;
-    out = theOut;
     delayStore = FXDelayDataStore.new;
     delayStore.addDependant(this);
     filterStore = FXFilterDataStore.new;
@@ -165,5 +164,9 @@ TouchSynth {
     reverbSynth = nil;
     monitorSynth = nil;
     isRunning = false;
+  }
+
+  storeOn { |stream|
+    stream << "TouchSynth(" <<< name << "," <<< synthName << "," <<< defaultArgs << ")";
   }
 }

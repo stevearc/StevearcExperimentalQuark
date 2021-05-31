@@ -17,6 +17,7 @@ PadsDataStore {
     };
     ^nil;
   }
+  selectedSynthName { ^selectedSynth.name }
   setPadSynth { |row, col, touchSynth|
     if (enabled) {
       padTouchSynths.at(row, col).stop;

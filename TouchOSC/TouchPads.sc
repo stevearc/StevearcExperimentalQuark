@@ -43,6 +43,7 @@ TouchPads : TouchOSCResponder {
 
 TouchPadsUI : TouchStoreUI {
   addChildrenImpl {
+    this.prAddChild(TouchControlLabel.fromStore('/synthName', store, \selectedSynthName));
     this.prAddChild(TouchControlMultiButton.fromStore('/pads', store, \padsDown, [4,4]));
     store.padTouchSynths.rowsDo { |row, i|
       row.size.do { |j|

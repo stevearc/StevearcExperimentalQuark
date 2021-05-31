@@ -57,5 +57,37 @@ TouchUber : TouchOSCResponder {
     );
   }
 
+  *serializeSynths { ^this.default.serializeSynths }
+  serializeSynths {
+    ^String.streamContents({ |stream|
+      pads.store.padTouchSynths.rowsDo { |row, i|
+        row.do { |touchSynth, j|
+          stream << this.class.name << ".setPadSynth(" << i << "," << j << ",";
+          touchSynth.storeOn(stream);
+          stream << ");\n";
+        };
+      };
+    });
+  }
+
+  *save { |filename| ^this.default.save(filename) }
+  save { |filename|
+    var path = PathName(filename);
+    if (path.extension == "") {
+      path = PathName(filename ++ ".scd");
+    };
+    File.mkdir(path.pathOnly);
+    File.use(path.fullPath, "w", { |f| f.write(this.serializeSynths); });
+  }
+
+  *load { |filename| ^this.default.load(filename) }
+  load { |filename|
+    var path = PathName(filename);
+    if (path.extension == "") {
+      path = PathName(filename ++ ".scd");
+    };
+    path.fullPath.load;
+  }
+
   *stop { ^this.default.stop }
 }
