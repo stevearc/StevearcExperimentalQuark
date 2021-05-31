@@ -4,19 +4,19 @@ FXReverbDataStore {
   enabled_ { |newval|
     if (newval != enabled) {
       enabled = newval;
-      this.process;
+      this.markChanged;
     }
   }
   wet_ { |newval|
     wet = newval;
-    this.process;
+    this.markChanged;
   }
   room_ { |newval|
     room = newval;
-    this.process;
+    this.markChanged;
   }
 
-  process {
+  markChanged {
     this.changed(\fxreverb);
   }
 }

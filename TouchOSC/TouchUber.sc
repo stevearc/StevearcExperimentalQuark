@@ -1,6 +1,6 @@
 TouchUber : TouchOSCResponder {
   classvar <>default, numKeyboards=3;
-  var <keyboardSynth, keys, fxboard, pads;
+  var keys, fxboard, pads;
   *initClass {
     default = this.new;
   }
@@ -8,22 +8,19 @@ TouchUber : TouchOSCResponder {
     ^super.new.init;
   }
   init {
-    keyboardSynth = TouchSynth.new;
     keys = Array.fill(numKeyboards, {|i| TouchKeyboard.new(i+1)});
+    keys.do { |keyboard|
+      this.prAddChild(keyboard);
+    };
     fxboard = TouchFXBoard.new;
+    this.prAddChild(fxboard);
     pads = TouchPads.new;
+    this.prAddChild(pads);
   }
 
-  *setPadSynth { |x, y, touchSynth| ^this.default.setPadSynth(x,y,touchSynth) }
-  setPadSynth { |x, y, touchSynth|
-    pads.store.setPadSynth(x, y, touchSynth);
-  }
-
-  keyboardSynth_ { |newSynth|
-    keyboardSynth.stop;
-    keyboardSynth = newSynth;
-    keyboardSynth.start;
-    keys.do { |keyboard| keyboard.touchSynth = keyboardSynth };
+  *setPadSynth { |row, col, touchSynth| ^this.default.setPadSynth(row,col,touchSynth) }
+  setPadSynth { |row, col, touchSynth|
+    pads.store.setPadSynth(row, col, touchSynth);
   }
 
   *start { ^this.default.start }
@@ -32,14 +29,11 @@ TouchUber : TouchOSCResponder {
       ^this;
     };
     super.start;
-    keyboardSynth.start;
-    fxboard.attach(keyboardSynth);
-    fxboard.start;
-    pads.start;
+    fxboard.attach(pads.selectedSynth);
     keys.do { |keyboard|
       keyboard.touchSynth = pads.selectedSynth;
-      keyboard.start;
     };
+    CmdPeriod.doOnce { this.stop };
     this.prAddFunc('/keys', {this.onPageChange('/keys')});
     this.prAddFunc('/fx', {this.onPageChange('/fx')});
     this.prAddFunc('/pads', {this.onPageChange('/pads')});
@@ -64,16 +58,4 @@ TouchUber : TouchOSCResponder {
   }
 
   *stop { ^this.default.stop }
-  stop {
-    if (isListening.not) {
-      ^this;
-    };
-    super.stop;
-    keyboardSynth.stop;
-    fxboard.stop;
-    pads.stop;
-    keys.do { |keyboard|
-      keyboard.stop;
-    };
-  }
 }

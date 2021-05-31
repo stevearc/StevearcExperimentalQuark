@@ -162,9 +162,9 @@ TouchSynth {
       }).add;
       Server.default.sync;
       monitorSynth = Synth(\touchOSCMonitor, [\bus, bus, \out, out], group, \addToTail);
-      delayStore.process;
-      filterStore.process;
-      reverbStore.process;
+      delayStore.markChanged;
+      filterStore.markChanged;
+      reverbStore.markChanged;
     }).start;
   }
 

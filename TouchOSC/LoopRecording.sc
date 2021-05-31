@@ -11,7 +11,7 @@ LoopRecording {
 
   update { |synth, action, nodeID, args|
     var beat = TempoClock.beats - startTime;
-    if (store.quantize) {
+    if (store.quantize and: (action != \note_set)) {
       if (store.bpm > 100) {
         beat = beat.round(1/4);
       } {

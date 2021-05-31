@@ -1,18 +1,33 @@
 LoopController : TouchOSCResponder {
-  var padsStore, ui, <store, recording, playing=false;
+  classvar numChannels=4;
+  var channels, <store;
   *new { |padsStore|
     ^super.new.init(padsStore);
   }
-  init { |thePadsStore|
-    padsStore = thePadsStore;
-    store = LoopDataStore.new;
+  init { |padsStore|
+    store = LoopDataStore.new(numChannels);
     store.addDependant(this);
-    recording = LoopRecording.new(store);
-    ui = LoopUI.new;
-    ui.store = store;
-    this.prAddChild(ui);
+    channels = Array.fill(numChannels, {|i| LoopChannel(padsStore, store, store.channelStores[i], i+1)});
+    channels.do { |channel|
+      this.prAddChild(channel);
+    };
+    this.prAddChild(LoopUI.new(store));
   }
+}
 
+LoopChannel : TouchOSCResponder {
+  var padsStore, loopStore, store, recording, playing=false;
+  *new { |padsStore, loopStore, store, index|
+    ^super.new.init(padsStore, loopStore, store, index);
+  }
+  init { |thePadsStore, theLoopStore, theStore, index|
+    padsStore = thePadsStore;
+    loopStore = theLoopStore;
+    store = theStore;
+    store.addDependant(this);
+    recording = LoopRecording.new(loopStore);
+    this.prAddChild(LoopChannelUI.new(store, index));
+  }
   play {
     var startBeat = TempoClock.nextTimeOnGrid(recording.duration);
     var synths = IdentityDictionary.new;
@@ -34,12 +49,12 @@ LoopController : TouchOSCResponder {
               synths[event.id] = synth;
             },
             \note_set, {
-              if (synth.isRunning) {
+              if (synth.notNil and: {synth.isRunning}) {
                 synth.set(*event.args);
               };
             },
             \note_end, {
-              if (synth.notNil and: synth.isRunning) {
+              if (synth.notNil and: {synth.isRunning}) {
                 synths[event.id].set(\gate, -1.1);
                 synths[event.id] = nil;
               };
@@ -60,9 +75,10 @@ LoopController : TouchOSCResponder {
   }
 
   startRecording {
-    var totalBeats = store.beatsPerBar * store.recordBars;
-    store.recordStartTime = TempoClock.nextTimeOnGrid(totalBeats, -1 * store.beatsPerBar)
-      + store.beatsPerBar;
+    var beatsPerBar = loopStore.beatsPerBar;
+    var totalBeats = beatsPerBar * loopStore.recordBars;
+    store.recordStartTime = TempoClock.nextTimeOnGrid(totalBeats, -1 * beatsPerBar)
+      + beatsPerBar;
     TempoClock.schedAbs(TempoClock.nextTimeOnGrid(1), {
       if (store.shouldRecord.not or: (store.recordTimeRemaining == 1)) {
         store.finishRecording;
@@ -74,9 +90,9 @@ LoopController : TouchOSCResponder {
           store.recording = true;
           store.recordTimeRemaining = totalBeats - (TempoClock.beats - store.recordStartTime);
         };
-        if (store.recordTimeRemaining >= (-1 * store.beatsPerBar)) {
+        if (store.recordTimeRemaining >= (-1 * beatsPerBar)) {
           var amp = 0.1;
-          if (TempoClock.beats % store.beatsPerBar == 0) {
+          if (TempoClock.beats % beatsPerBar == 0) {
             amp = 0.3;
           };
           Synth(\touchOSCMetronome, [\amp, amp]);
@@ -96,7 +112,7 @@ LoopController : TouchOSCResponder {
         if (store.playing.not) {
           recording.clear;
         };
-        recording.duration = store.recordBars * store.beatsPerBar;
+        recording.duration = loopStore.recordBars * loopStore.beatsPerBar;
         padsStore.padTouchSynths.do { |synth|
           recording.record(synth);
         };
@@ -124,14 +140,26 @@ LoopController : TouchOSCResponder {
 
 LoopUI : TouchStoreUI {
   addChildrenImpl {
-    this.prAddChild(TouchControlLabel(store, \bpm, '/looper/tempo/label'));
-    this.prAddChild(TouchControlLabel(store, \tempoString, '/looper/tempo/name'));
-    this.prAddChild(TouchControlRange(store, \bpm, '/looper/tempo', [40, 220]));
+    this.prAddChild(TouchControlLabel.fromStore('/looper/tempo/label', store, \bpm));
+    this.prAddChild(TouchControlLabel.fromStore('/looper/tempo/name', store, \tempoString));
+    this.prAddChild(TouchControlRange.fromStore('/looper/tempo', store, \bpm, [40, 220]));
+    this.prAddChild(TouchControlToggle.fromStore('/looper/quantize', store, \quantize));
+    this.prAddChild(TouchControlLabel.fromStore('/looper/countdown', store, \countdown));
+    this.prAddChild(TouchControlLabel.fromStore('/looper/recording', store, \recording));
+  }
+}
 
-    this.prAddChild(TouchControlLabel(store, \recordCountdown, '/looper/countdown'));
-    this.prAddChild(TouchControlToggle(store, \shouldRecord, '/looper/record'));
-    this.prAddChild(TouchControlLabel(store, \recording, '/looper/recording'));
-
-    this.prAddChild(TouchControlToggle(store, \playing, '/looper/play'));
+LoopChannelUI : TouchStoreUI {
+  var index;
+  *new { |store, index|
+    ^super.new(nil).init(store, index);
+  }
+  init { |theStore, theIndex|
+    index = theIndex;
+    this.store =theStore;
+  }
+  addChildrenImpl {
+    this.prAddChild(TouchControlToggle.fromStore("/looper/record/%".format(index), store, \shouldRecord));
+    this.prAddChild(TouchControlToggle.fromStore("/looper/play/%".format(index), store, \playing));
   }
 }

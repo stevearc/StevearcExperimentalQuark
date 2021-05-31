@@ -1,5 +1,12 @@
+// TODO I think I can refactor this out
 TouchStoreUI : TouchOSCResponder {
   var <store;
+  *new { |store|
+    ^super.new.initUI(store);
+  }
+  initUI { |store|
+    this.store = store;
+  }
 
   store_ { |theStore|
     if (store == theStore) {
@@ -14,9 +21,6 @@ TouchStoreUI : TouchOSCResponder {
     } {
       store.addDependant(this);
       this.addChildrenImpl;
-      if (this.isListening) {
-        this.sync;
-      };
     }
   }
 

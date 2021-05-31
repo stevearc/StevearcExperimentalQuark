@@ -4,23 +4,23 @@ FXFilterDataStore {
   enabled_ { |newval|
     if (newval != enabled) {
       enabled = newval;
-      this.process;
+      this.markChanged;
     }
   }
   wet_ { |newval|
     wet = newval;
-    this.process;
+    this.markChanged;
   }
   freq_ { |newval|
     freq = newval;
-    this.process;
+    this.markChanged;
   }
   width_ { |newval|
     width = newval;
-    this.process;
+    this.markChanged;
   }
 
-  process {
+  markChanged {
     this.changed(\fxfilter);
   }
 }

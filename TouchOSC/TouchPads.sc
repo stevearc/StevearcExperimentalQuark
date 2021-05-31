@@ -1,13 +1,13 @@
 TouchPads : TouchOSCResponder {
-  classvar numPads=16;
+  classvar numRows=4, numCols=4;
   var ui, synths, <store, loopCtl;
   *new {
     ^super.new.init;
   }
   init {
-    store = PadsDataStore.new(numPads);
+    store = PadsDataStore.new(numRows, numCols);
     store.addDependant(this);
-    synths = Array.fill(numPads, nil);
+    synths = Array2D.new(numRows, numCols);
     ui = TouchPadsUI.new;
     ui.store = store;
     this.prAddChild(ui);
@@ -16,14 +16,16 @@ TouchPads : TouchOSCResponder {
   }
 
   selectedSynth {
-    ^store.padTouchSynths[store.selectedSynth];
+    ^store.selectedSynth;
   }
 
   update { |store, what|
-    store.padsDown.size.do { |i|
-      var touchSynth = store.padTouchSynths[i];
-      if (touchSynth.notNil) {
-        synths[i] = touchSynth.updateSynth(synths[i], store.padsDown[i]);
+    store.padsDown.rowsDo { |row, i|
+      row.do { |down, j|
+        var touchSynth = store.padTouchSynths.at(i, j);
+        if (touchSynth.notNil) {
+          synths.put(i, j, touchSynth.updateSynth(synths.at(i,j), down));
+        }
       }
     };
   }
@@ -41,16 +43,15 @@ TouchPads : TouchOSCResponder {
 
 TouchPadsUI : TouchStoreUI {
   addChildrenImpl {
-    this.prAddChild(TouchControlMultiButton('/pads', [4,4], { |down, x, y|
-      var i = y*4 + x;
-      store.setPad(i, down);
-    }));
-    store.padTouchSynths.size.do { |i|
-      var x = i % 4;
-      var y = (i / 4).asInteger;
-      this.prAddChild(TouchControlLabel(store,
-          {|store| store.padTouchSynths[i].name},
-          "/pads/%/%/label".format(y+1,x+1)));
+    this.prAddChild(TouchControlMultiButton.fromStore('/pads', store, \padsDown, [4,4]));
+    store.padTouchSynths.rowsDo { |row, i|
+      row.size.do { |j|
+        this.prAddChild(TouchControlLabel(
+          "/pads/%/%/label".format(i+1,j+1),
+          store,
+          {|store| store.padTouchSynths.at(i, j).name},
+        ));
+      }
     };
   }
 }

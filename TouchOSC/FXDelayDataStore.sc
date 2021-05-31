@@ -5,29 +5,29 @@ FXDelayDataStore {
   enabled_ { |newval|
     if (newval != enabled) {
       enabled = newval;
-      this.process;
+      this.markChanged;
     }
   }
   quantize_ { |newval|
     quantize = newval;
-    this.process;
+    this.markChanged;
   }
   delayTime_ { |newval|
     delayTime = newval;
     decayTime = max(decayTime, delayTime);
-    this.process;
+    this.markChanged;
   }
   decayTime_ { |newval|
     decayTime = newval;
     delayTime = min(delayTime, decayTime);
-    this.process;
+    this.markChanged;
   }
   decayMul_ { |newval|
     decayMul = newval;
-    this.process;
+    this.markChanged;
   }
 
-  process {
+  markChanged {
     delayTime = max(delayTime, 1/32);
     decayTime = max(decayTime, 1/32);
     decayTime = max(delayTime, decayTime);

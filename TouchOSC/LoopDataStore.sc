@@ -1,62 +1,41 @@
 LoopDataStore {
-  var <tempoString, <shouldRecord=false, <recording=false, <>recordStartTime=nil,
-    <recordTimeRemaining=nil, <recordBars=2, <playing=false, <quantize=true;
-  *new {
-    ^super.new.init;
+  var <tempoString, <recordBars=2, <>quantize=true,
+    <channelStores;
+  *new { |numChannels|
+    ^super.new.init(numChannels);
   }
-  init {
-    this.process;
+  init { |numChannels|
+    channelStores = Array.fill(numChannels, {LoopChannelDataStore.new});
+    channelStores.do { |channelStore|
+      channelStore.addDependant(this);
+    };
+    this.markChanged;
+  }
+  update { |store, what|
+    this.markChanged;
   }
   beatsPerBar {
     ^TempoClock.beatsPerBar;
-  }
-  playing_ { |newval|
-    if (playing != newval) {
-      playing = newval;
-      this.process;
-    };
-  }
-  finishRecording {
-    if (this.shouldRecord) {
-      playing = true;
-    };
-    shouldRecord = false;
-    recording = false;
-    recordTimeRemaining = nil;
-    recordStartTime = nil;
-    this.process;
-  }
-  shouldRecord_ { |newval|
-    if (shouldRecord != newval) {
-      shouldRecord = newval;
-      this.process;
-    };
-  }
-  recording_ { |newval|
-    if (recording != newval) {
-      recording = newval;
-      this.process;
-    };
-  }
-  recordTimeRemaining_ { |newval|
-    recordTimeRemaining = newval;
-    this.process;
-  }
-  recordCountdown {
-    if (recordTimeRemaining.isNil) {
-      ^"";
-    } {
-      ^recordTimeRemaining.abs;
-    };
   }
   bpm {
     ^(TempoClock.tempo * 60).asInteger;
   }
   bpm_ { |bpm|
     TempoClock.tempo = bpm.asInteger / 60;
-    this.process;
+    this.markChanged;
   }
-  process {
+  recording {
+    ^channelStores.any { |channelStore| channelStore.recording };
+  }
+  countdown {
+    channelStores.do { |channelStore|
+      if (channelStore.recordTimeRemaining.notNil) {
+        ^channelStore.recordTimeRemaining.abs;
+      };
+    };
+    ^"";
+  }
+  markChanged {
     tempoString = case
       { this.bpm <= 60 } { "largo" }
       { this.bpm <= 66 } { "larghetto" }

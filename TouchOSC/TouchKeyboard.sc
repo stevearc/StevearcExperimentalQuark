@@ -11,20 +11,20 @@ KeyboardDataStore {
     var newOctave = newval.round(1).asInteger;
     if (octave != newOctave) {
       octave = newOctave;
-      this.process;
+      this.markChanged;
     }
   }
   pitchBend_ { |newval|
     pitchBend = newval;
-    this.process;
+    this.markChanged;
   }
   setKey { |idx, playing|
     if (playing != keysPlaying[idx]) {
       keysPlaying[idx] = playing;
-      this.process;
+      this.markChanged;
     }
   }
-  process {
+  markChanged {
     octaveLabel = "C%".format(octave);
     this.changed(\keyboard);
   }
@@ -66,7 +66,7 @@ TouchKeyboard : TouchOSCResponder {
     KeyboardDataStore.keysPerKeyboard.do { |i|
       store.keysPlaying[i] = false;
     };
-    store.process;
+    store.markChanged;
   }
 }
 
@@ -79,13 +79,13 @@ TouchKeyboardUI : TouchStoreUI {
     prefix = thePrefix;
   }
   addChildrenImpl {
-    this.prAddChild(TouchControlRange(store, \pitchBend, prefix ++ 'pitchBend', onTouchEnd: {
+    this.prAddChild(TouchControlRange.fromStore(prefix ++ 'pitchBend', store, \pitchBend, onTouchEnd: {
       store.pitchBend = 0;
     }));
-    this.prAddChild(TouchControlRange(store, \octave, prefix ++ 'octave', [1,7]));
-    this.prAddChild(TouchControlLabel(store, \octaveLabel, prefix ++ 'octave/label'));
+    this.prAddChild(TouchControlRange.fromStore(prefix ++ 'octave', store, \octave, [1,7]));
+    this.prAddChild(TouchControlLabel.fromStore(prefix ++ 'octave/label', store, \octaveLabel));
     KeyboardDataStore.keysPerKeyboard.do { |i|
-      this.prAddChild(TouchControlButton(store, \_, prefix ++ (i+1), { |down|
+      this.prAddChild(TouchControlButton(prefix ++ (i+1), store, { |down|
         store.setKey(i, down);
       }));
     };
