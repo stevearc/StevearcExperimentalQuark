@@ -1,6 +1,13 @@
 FXDelayDataStore {
-  var <enabled=false, <quantize=true, <delayTime=0.125, <decayTime=2, <decayMul=0.8,
-    <delayLabel="1/8", <decayLabel="2";
+  var <enabled, <quantize, <delayTime, <decayTime, <decayMul,
+    <delayLabel, <decayLabel;
+
+  *new { |enabled=false, quantize=true, delayTime=0.125, decayTime=2, decayMul=0.8|
+    var instance = super.newCopyArgs(enabled, quantize, delayTime, decayTime, decayMul);
+    instance.markChanged;
+    ^instance;
+  }
+  storeArgs { ^[enabled, quantize, delayTime, decayTime, decayMul] }
 
   enabled_ { |newval|
     if (newval != enabled) {

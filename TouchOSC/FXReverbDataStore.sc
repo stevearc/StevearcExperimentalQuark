@@ -1,5 +1,10 @@
 FXReverbDataStore {
-  var <enabled=false, <wet=0.3, <room=0.5;
+  var <enabled, <wet, <room;
+
+  *new { |enabled=false, wet=0.3, room=0.5|
+    ^super.newCopyArgs(enabled, wet, room);
+  }
+  storeArgs { ^[enabled, wet, room] }
 
   enabled_ { |newval|
     if (newval != enabled) {

@@ -1,5 +1,10 @@
 FXFilterDataStore {
-  var <enabled=false, <wet=1, <freq=440, <width=1;
+  var <enabled, <wet, <freq, <width;
+
+  *new { |enabled=false, wet=1, freq=440, width=1|
+    ^super.newCopyArgs(enabled, wet, freq, width)
+  }
+  storeArgs { ^[enabled, wet, freq, width] }
 
   enabled_ { |newval|
     if (newval != enabled) {
