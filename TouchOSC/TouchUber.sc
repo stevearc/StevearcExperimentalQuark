@@ -23,6 +23,11 @@ TouchUber : TouchOSCResponder {
     pads.store.setPadSynth(row, col, touchSynth);
   }
 
+  *setLoop { |i, recording| ^this.default.setLoop(i, recording) }
+  setLoop { |i, recording|
+    pads.loopCtl.setLoop(i, recording);
+  }
+
   *start { ^this.default.start }
   start {
     if (isListening) {
@@ -70,6 +75,17 @@ TouchUber : TouchOSCResponder {
     });
   }
 
+  *serializeLoops { ^this.default.serializeLoops }
+  serializeLoops {
+    var loops = pads.serializeLoops;
+    ^String.streamContents({ |stream|
+      loops.do { |recording, i|
+        stream << this.class.name << ".setLoop(";
+        stream <<< i << "," <<< recording << ");\n";
+      };
+    });
+  }
+
   *save { |filename| ^this.default.save(filename) }
   save { |filename|
     var path;
@@ -79,7 +95,10 @@ TouchUber : TouchOSCResponder {
     };
     lastSave = path.fullPath;
     File.mkdir(path.pathOnly);
-    File.use(path.fullPath, "w", { |f| f.write(this.serializeSynths); });
+    File.use(path.fullPath, "w", { |f|
+      f.write(this.serializeSynths);
+      f.write(this.serializeLoops);
+    });
   }
 
   *load { |filename| ^this.default.load(filename) }

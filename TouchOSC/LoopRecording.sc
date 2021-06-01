@@ -1,13 +1,18 @@
 LoopRecording {
-  var touchSynths, store, <events, <isRecording=false, <>duration, startTime;
-  *new { |store|
+  var touchSynths, <>store, <events, <isRecording=false, <>duration, startTime, idPrefix;
+  *new { |duration, events|
+    ^super.new.init(nil, duration, events);
+  }
+  *empty { |store|
     ^super.new.init(store);
   }
-  init { |theStore|
+  init { |theStore, theDuration, theEvents|
     store = theStore;
     touchSynths = Array.new;
-    events = Array.new;
+    duration = theDuration;
+    events = theEvents ?? {Array.new};
   }
+  storeArgs { ^[duration, events] }
 
   update { |synth, action, nodeID, args|
     var beat = TempoClock.beats - startTime;
@@ -21,7 +26,9 @@ LoopRecording {
     // TODO filter out no-op set events
     events = events.add((
       type: action,
-      id: nodeID,
+      // nodeID may not be unique. They can get re-used. This is especially true
+      // if we have saved & loaded a recording across sessions
+      id: (idPrefix ++ nodeID).asSymbol,
       beat: beat,
       synthName: synth.name,
       args: args,
@@ -38,6 +45,7 @@ LoopRecording {
     if (isRecording.not) {
       startTime = TempoClock.beats;
       isRecording = true;
+      idPrefix = "%:".format(events.size);
     };
   }
   stop {

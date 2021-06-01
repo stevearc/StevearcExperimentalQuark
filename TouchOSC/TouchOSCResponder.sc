@@ -57,7 +57,7 @@ TouchOSCResponder {
       c.stop;
     };
     oscfuncs.do { |f|
-      f.stop;
+      f.free;
     };
     oscfuncs = Array.new;
     isListening = false;

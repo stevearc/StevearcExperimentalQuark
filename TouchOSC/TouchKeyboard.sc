@@ -78,16 +78,19 @@ TouchKeyboardUI : TouchStoreUI {
   init { |thePrefix|
     prefix = thePrefix;
   }
-  addChildrenImpl {
-    this.prAddChild(TouchControlRange.fromStore(prefix ++ 'pitchBend', store, \pitchBend, onTouchEnd: {
-      store.pitchBend = 0;
-    }));
-    this.prAddChild(TouchControlRange.fromStore(prefix ++ 'octave', store, \octave, [1,7]));
-    this.prAddChild(TouchControlLabel.fromStore(prefix ++ 'octave/label', store, \octaveLabel));
+  getChildren {
+    var children = [
+      TouchControlRange.fromStore(prefix ++ 'pitchBend', store, \pitchBend, onTouchEnd: {
+        store.pitchBend = 0;
+      }),
+      TouchControlRange.fromStore(prefix ++ 'octave', store, \octave, [1,7]),
+      TouchControlLabel.fromStore(prefix ++ 'octave/label', store, \octaveLabel),
+    ];
     KeyboardDataStore.keysPerKeyboard.do { |i|
-      this.prAddChild(TouchControlButton(prefix ++ (i+1), store, { |down|
+      children = children.add(TouchControlButton(prefix ++ (i+1), store, { |down|
         store.setKey(i, down);
       }));
     };
+    ^children;
   }
 }

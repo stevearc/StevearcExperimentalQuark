@@ -76,11 +76,7 @@ TouchSynth {
       ^synth;
     } {
       if (synth.notNil and: {synth.isPlaying}) {
-        // Cut off after 100ms to avoid nodeID race conditions. If user plays a
-        // note fast enough we could end up setting the gate to 0 before it
-        // starts playing. In that case, the node will hang around and not free
-        // itself.
-        synth.set(\gate, -1.1);
+        synth.set(\gate, 0);
         this.changed(\note_end, synth.nodeID);
       }
       ^nil;
@@ -111,7 +107,7 @@ TouchSynth {
     isRunning = true;
     Task({
       if (masterGroup.isNil) {
-        masterGroup = Group.new(RootNode(Server.default), \addToTail);
+        masterGroup = Group.new(Server.default, \addAfter);
         Server.default.sync;
         CmdPeriod.doOnce {
           masterGroup.free;
@@ -176,7 +172,15 @@ TouchSynth {
   }
 
   storeOn { |stream|
-    stream << "TouchSynth(" <<< name << "," <<< synthName << "," <<< defaultArgs << ",";
+    stream << "TouchSynth(" <<< name << "," <<< synthName << ",[";
+    forBy (0, defaultArgs.size - 1, 2) { |i|
+      var key = defaultArgs[i];
+      var value = defaultArgs[i+1];
+      if (value.class != Buffer) {
+        stream <<< key << "," <<< value << ",";
+      }
+    };
+    stream << "],";
     stream <<< delayStore << ",";
     stream <<< filterStore << ",";
     stream <<< reverbStore;

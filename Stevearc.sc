@@ -8,14 +8,14 @@ SA {
     };
     SA.boot;
     s.waitForBoot({
-      fork {
-        SA.load;
-        Master.enable;
-        if (callback.notNil) {
+      SA.load;
+      Master.enable;
+      if (callback.notNil) {
+        Routine({
           s.sync;
-          callback.value;
-        };
-      }
+          Routine(callback).play(AppClock);
+        }).play(AppClock);
+      };
     });
   }
 

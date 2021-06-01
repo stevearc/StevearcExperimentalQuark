@@ -1,4 +1,3 @@
-// TODO I think I can refactor this out
 TouchStoreUI : TouchOSCResponder {
   var <store;
   *new { |store|
@@ -16,22 +15,18 @@ TouchStoreUI : TouchOSCResponder {
       store.removeDependant(this);
     };
     store = theStore;
-    if (store.isNil) {
-      this.prClearChildren;
-    } {
+    this.prClearChildren;
+    if (store.notNil) {
       store.addDependant(this);
-      this.addChildrenImpl;
+      this.getChildren.do { |child|
+        this.prAddChild(child);
+      };
     }
   }
 
-  addChildrenImpl { }
+  getChildren { ^[] }
 
   update { |store, what|
     this.sync;
-  }
-
-  stop {
-    super.stop;
-    this.store = nil;
   }
 }

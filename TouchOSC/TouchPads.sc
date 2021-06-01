@@ -1,6 +1,6 @@
 TouchPads : TouchOSCResponder {
   classvar numRows=4, numCols=4;
-  var ui, synths, <store, loopCtl;
+  var ui, synths, <store, <loopCtl;
   *new {
     ^super.new.init;
   }
@@ -17,6 +17,10 @@ TouchPads : TouchOSCResponder {
 
   selectedSynth {
     ^store.selectedSynth;
+  }
+
+  serializeLoops {
+    ^loopCtl.serializeLoops;
   }
 
   update { |store, what|
@@ -42,17 +46,20 @@ TouchPads : TouchOSCResponder {
 }
 
 TouchPadsUI : TouchStoreUI {
-  addChildrenImpl {
-    this.prAddChild(TouchControlLabel.fromStore('/synthName', store, \selectedSynthName));
-    this.prAddChild(TouchControlMultiButton.fromStore('/pads', store, \padsDown, [4,4]));
+  getChildren {
+    var children = [
+      TouchControlLabel.fromStore('/synthName', store, \selectedSynthName),
+      TouchControlMultiButton.fromStore('/pads', store, \padsDown, [4,4]),
+    ];
     store.padTouchSynths.rowsDo { |row, i|
       row.size.do { |j|
-        this.prAddChild(TouchControlLabel(
+        children = children.add(TouchControlLabel(
           "/pads/%/%/label".format(i+1,j+1),
           store,
           {|store| store.padTouchSynths.at(i, j).name},
         ));
       }
     };
+    ^children;
   }
 }

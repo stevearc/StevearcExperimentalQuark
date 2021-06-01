@@ -1,6 +1,6 @@
 (
 SynthDef(\sawbass, {
-  |out=0, amp=0.1, pan=0, freq=440, atk=0.01, decay=0.1, rel=0.2, sustainLevel=0.5, cAtk=(-2), cDec=(-2), cRel=(-4), gate=1,
+  |out=0, amp=0.1, pan=0, freq=90, atk=0.01, decay=0.1, rel=0.2, sustainLevel=0.5, cAtk=(-2), cDec=(-2), cRel=(-4), gate=1,
   detune=0.001, lpfscale=2, freqFade=0, lpfscaleFade=0|
   var sig, env;
   freq = freq.varlag(freqFade);
@@ -24,7 +24,7 @@ SynthDef(\sawbass, {
 
   sig = sig + Greyhole.ar(sig,
     delayTime: 0.4,
-    feedback: 0.4,
+    feedback: 0.8,
     diff: 0.4,
     damp: 0.1,
     modDepth: 0.9,

@@ -13,10 +13,18 @@ LoopController : TouchOSCResponder {
     };
     this.prAddChild(LoopUI.new(store));
   }
+
+  serializeLoops {
+    ^channels.collect(_.recording);
+  }
+
+  setLoop { |i, recording|
+    channels[i].recording = recording;
+  }
 }
 
 LoopChannel : TouchOSCResponder {
-  var padsStore, loopStore, store, recording, playing=false;
+  var padsStore, loopStore, store, <recording, playing=false;
   *new { |padsStore, loopStore, store, index|
     ^super.new.init(padsStore, loopStore, store, index);
   }
@@ -25,15 +33,28 @@ LoopChannel : TouchOSCResponder {
     loopStore = theLoopStore;
     store = theStore;
     store.addDependant(this);
-    recording = LoopRecording.new(loopStore);
+    recording = LoopRecording.empty(loopStore);
     this.prAddChild(LoopChannelUI.new(store, index));
+  }
+  recording_ { |theRecording|
+    recording.clear;
+    recording.stop;
+    recording = theRecording;
+    recording.store = loopStore;
   }
   play {
     var startBeat = TempoClock.nextTimeOnGrid(recording.duration);
     var synths = IdentityDictionary.new;
+    // Loop playback
     TempoClock.schedAbs(startBeat + recording.duration, {
       if (store.playing) {
         this.play;
+      } {
+        synths.do { |synth|
+          if (synth.isRunning) {
+            synth.set(\gate, 0);
+          };
+        };
       };
     });
     recording.events.do { |event|
@@ -55,7 +76,7 @@ LoopChannel : TouchOSCResponder {
             },
             \note_end, {
               if (synth.notNil and: {synth.isRunning}) {
-                synths[event.id].set(\gate, -1.1);
+                synths[event.id].set(\gate, 0);
                 synths[event.id] = nil;
               };
             },
@@ -79,6 +100,15 @@ LoopChannel : TouchOSCResponder {
     var totalBeats = beatsPerBar * loopStore.recordBars;
     store.recordStartTime = TempoClock.nextTimeOnGrid(totalBeats, -1 * beatsPerBar)
       + beatsPerBar;
+
+    // actually start recording riiiight before the first bar, to catch tiny
+    // imperfections in playing
+    TempoClock.schedAbs(store.recordStartTime - (1/16), {
+      if (store.shouldRecord) {
+        store.recording = true;
+      };
+    });
+
     TempoClock.schedAbs(TempoClock.nextTimeOnGrid(1), {
       if (store.shouldRecord.not or: (store.recordTimeRemaining == 1)) {
         store.finishRecording;
@@ -87,9 +117,9 @@ LoopChannel : TouchOSCResponder {
         if (TempoClock.beats < store.recordStartTime) {
           store.recordTimeRemaining = TempoClock.beats - store.recordStartTime;
         } {
-          store.recording = true;
           store.recordTimeRemaining = totalBeats - (TempoClock.beats - store.recordStartTime);
         };
+        // Play the metronome for one bar before we start recording and while recording
         if (store.recordTimeRemaining >= (-1 * beatsPerBar)) {
           var amp = 0.1;
           if (TempoClock.beats % beatsPerBar == 0) {
@@ -139,13 +169,15 @@ LoopChannel : TouchOSCResponder {
 }
 
 LoopUI : TouchStoreUI {
-  addChildrenImpl {
-    this.prAddChild(TouchControlLabel.fromStore('/looper/tempo/label', store, \bpm));
-    this.prAddChild(TouchControlLabel.fromStore('/looper/tempo/name', store, \tempoString));
-    this.prAddChild(TouchControlRange.fromStore('/looper/tempo', store, \bpm, [40, 220]));
-    this.prAddChild(TouchControlToggle.fromStore('/looper/quantize', store, \quantize));
-    this.prAddChild(TouchControlLabel.fromStore('/looper/countdown', store, \countdown));
-    this.prAddChild(TouchControlLabel.fromStore('/looper/recording', store, \recording));
+  getChildren {
+    ^[
+      TouchControlLabel.fromStore('/looper/tempo/label', store, \bpm),
+      TouchControlLabel.fromStore('/looper/tempo/name', store, \tempoString),
+      TouchControlRange.fromStore('/looper/tempo', store, \bpm, [40, 220]),
+      TouchControlToggle.fromStore('/looper/quantize', store, \quantize),
+      TouchControlLabel.fromStore('/looper/countdown', store, \countdown),
+      TouchControlLabel.fromStore('/looper/recording', store, \recording),
+    ];
   }
 }
 
@@ -158,8 +190,10 @@ LoopChannelUI : TouchStoreUI {
     index = theIndex;
     this.store =theStore;
   }
-  addChildrenImpl {
-    this.prAddChild(TouchControlToggle.fromStore("/looper/record/%".format(index), store, \shouldRecord));
-    this.prAddChild(TouchControlToggle.fromStore("/looper/play/%".format(index), store, \playing));
+  getChildren {
+    ^[
+      TouchControlToggle.fromStore("/looper/record/%".format(index), store, \shouldRecord),
+      TouchControlToggle.fromStore("/looper/play/%".format(index), store, \playing),
+    ];
   }
 }

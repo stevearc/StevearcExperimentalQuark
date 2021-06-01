@@ -1,16 +1,113 @@
-TouchUber.setPadSynth(0,0,TouchSynth('kick808','kick808',[  ],nil,nil,nil));
-TouchUber.setPadSynth(0,1,TouchSynth('ringz','kickRingz',[  ],nil,nil,nil));
-TouchUber.setPadSynth(0,2,TouchSynth('oto309','kick_oto309',[  ],nil,nil,nil));
-TouchUber.setPadSynth(0,3,TouchSynth('sos','sosKick',[  ],nil,nil,nil));
-TouchUber.setPadSynth(1,0,TouchSynth('snare','snare',[ 'amp', 0.3 ],nil,nil,nil));
-TouchUber.setPadSynth(1,1,TouchSynth('clap','clapOto309',[ 'rel', 0.4, 'amp', 0.2 ],nil,nil,nil));
-TouchUber.setPadSynth(1,2,TouchSynth('klank','klank',[  ],nil,nil,nil));
-TouchUber.setPadSynth(1,3,TouchSynth('chime','prayerBell',[ 'freq', 2637.020455303, 'amp', 0.05 ],nil,nil,nil));
-TouchUber.setPadSynth(2,0,TouchSynth('gong','prayerBell',[ 'freq', 46.249302838954, 'amp', 0.1 ],nil,nil,nil));
-TouchUber.setPadSynth(2,1,TouchSynth('blip','blip',[  ],nil,nil,nil));
-TouchUber.setPadSynth(2,2,TouchSynth('blip1','blip1',[  ],nil,nil,nil));
-TouchUber.setPadSynth(2,3,TouchSynth('ikeda','ikedaBass',[  ],nil,nil,nil));
-TouchUber.setPadSynth(3,0,TouchSynth('hat','hihat1',[ 'rel', 0.13 ],nil,nil,nil));
-TouchUber.setPadSynth(3,1,TouchSynth('openhat','hihat1',[ 'rel', 0.4 ],nil,nil,nil));
-TouchUber.setPadSynth(3,2,TouchSynth('sizzle','purpleNoise',[  ],nil,nil,nil));
-TouchUber.setPadSynth(3,3,TouchSynth('sawbass','sawbass',[ 'freq', 92.498605677909 ],nil,nil,nil));
+TouchUber.setPadSynth(0,0,TouchSynth('kick808','kick808',[],nil,nil,nil));
+TouchUber.setPadSynth(0,1,TouchSynth('ringz','kickRingz',[],nil,nil,nil));
+TouchUber.setPadSynth(0,2,TouchSynth('oto309','kick_oto309',[],nil,nil,nil));
+TouchUber.setPadSynth(0,3,TouchSynth('sos','sosKick',[],nil,nil,nil));
+TouchUber.setPadSynth(1,0,TouchSynth('snare','snare',['amp',0.3,],nil,nil,nil));
+TouchUber.setPadSynth(1,1,TouchSynth('clap','clapOto309',['rel',0.4,'amp',0.2,],nil,nil,nil));
+TouchUber.setPadSynth(1,2,TouchSynth('hat','hihat1',['rel',0.13,],nil,nil,nil));
+TouchUber.setPadSynth(1,3,TouchSynth('openhat','hihat1',['rel',0.4,],nil,nil,nil));
+TouchUber.setPadSynth(2,0,TouchSynth('klank','klank',[],nil,nil,nil));
+TouchUber.setPadSynth(2,1,TouchSynth('gong','prayerBell',['freq',46.249302838954,'amp',0.1,],nil,nil,nil));
+TouchUber.setPadSynth(2,2,TouchSynth('chime','prayerBell',['freq',2637.020455303,'amp',0.05,],nil,nil,nil));
+TouchUber.setPadSynth(2,3,TouchSynth('kalimba','samplerPlayBuf2',['freq',200,'rel',1.4,],nil,nil,nil));
+TouchUber.setPadSynth(3,0,TouchSynth('blip','blip',[],nil,nil,nil));
+TouchUber.setPadSynth(3,1,TouchSynth('rav','samplerPlayBuf1',['freq',100,'rel',4,'amp',0.8,],nil,nil,nil));
+TouchUber.setPadSynth(3,2,TouchSynth('sawbass','sawbass',[],nil,nil,nil));
+TouchUber.setPadSynth(3,3,TouchSynth('ikeda','ikedaBass',[],nil,nil,nil));
+TouchUber.setLoop(0,LoopRecording(8.0, [ ( 'args': [  ], 'id': '1126', 'beat': 0.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 0.5, 'id': '1126', 'type': 'note_end' ), ( 'args': [ 'amp', 0.3 ], 'id': '1128', 'beat': 1.0, 'synthName': 'snare', 
+  'type': 'note_start' ), ( 'args': [  ], 'id': '1129', 'beat': 1.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 1.5, 'id': '1129', 'type': 'note_end' ), ( 'args': [  ], 'id': '1131', 'beat': 2.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 2.5, 'id': '1131', 'type': 'note_end' ), ( 'args': [  ], 'id': '1132', 'beat': 3.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'args': [ 'amp', 0.3 ], 'id': '1133', 'beat': 3.0, 'synthName': 'snare', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 3.5, 'id': '1132', 'type': 'note_end' ), ( 'args': [  ], 'id': '1135', 'beat': 4.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 4.5, 'id': '1135', 'type': 'note_end' ), ( 'args': [  ], 'id': '1138', 'beat': 5.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'args': [ 'amp', 0.3 ], 'id': '1139', 'beat': 5.0, 'synthName': 'snare', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 5.5, 'id': '1138', 'type': 'note_end' ), ( 'args': [  ], 'id': '1140', 'beat': 6.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 6.5, 'id': '1140', 'type': 'note_end' ), ( 'args': [ 'amp', 0.3 ], 'id': '1142', 'beat': 7.0, 'synthName': 'snare', 
+  'type': 'note_start' ), ( 'args': [  ], 'id': '1143', 'beat': 7.0, 'synthName': 'ringz', 
+  'type': 'note_start' ), ( 'synthName': 'ringz', 'beat': 7.5, 'id': '1143', 'type': 'note_end' ), ( 'args': [  ], 'id': '1133', 'beat': 8.0, 'synthName': 'snare', 
+  'type': 'note_end' ), ( 'args': [  ], 'id': '1128', 'beat': 8.0, 'synthName': 'snare', 
+  'type': 'note_end' ), ( 'args': [  ], 'id': '1142', 'beat': 8.0, 'synthName': 'snare', 
+  'type': 'note_end' ), ( 'args': [  ], 'id': '1139', 'beat': 8.0, 'synthName': 'snare', 
+  'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 0.0, 'id': '24:1219', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 0.25, 'id': '24:1219', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 0.5, 'id': '24:1220', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 0.75, 'id': '24:1220', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 1.0, 'id': '24:1221', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 1.25, 'id': '24:1221', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 1.5, 'id': '24:1225', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 1.75, 'id': '24:1225', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 2.0, 'id': '24:1226', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 2.0, 'id': '24:1226', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 2.5, 'id': '24:1229', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 2.5, 'id': '24:1229', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 3.0, 'id': '24:1230', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 3.25, 'id': '24:1230', 'type': 'note_end' ), ( 'args': [ 'rel', 0.4 ], 'type': 'note_start', 'beat': 3.5, 'id': '24:1234', 
+  'synthName': 'openhat' ), ( 'synthName': 'openhat', 'beat': 3.5, 'id': '24:1234', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 4.0, 'id': '24:1237', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 4.25, 'id': '24:1237', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 4.5, 'id': '24:1238', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 4.5, 'id': '24:1238', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 5.0, 'id': '24:1242', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 5.25, 'id': '24:1242', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 5.5, 'id': '24:1243', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 5.75, 'id': '24:1243', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 6.0, 'id': '24:1244', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 6.25, 'id': '24:1244', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 6.5, 'id': '24:1247', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 6.75, 'id': '24:1247', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'type': 'note_start', 'beat': 7.0, 'id': '24:1251', 
+  'synthName': 'hat' ), ( 'synthName': 'hat', 'beat': 7.25, 'id': '24:1251', 'type': 'note_end' ), ( 'args': [ 'rel', 0.4 ], 'type': 'note_start', 'beat': 7.5, 'id': '24:1252', 
+  'synthName': 'openhat' ), ( 'synthName': 'openhat', 'beat': 7.5, 'id': '24:1252', 'type': 'note_end' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1243', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1244', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1221', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1226', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1220', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1237', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1230', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1247', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1251', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1225', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1238', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1229', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1252', 
+  'synthName': 'openhat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1234', 
+  'synthName': 'openhat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1242', 
+  'synthName': 'hat' ), ( 'args': [  ], 'type': 'note_end', 'beat': 8.0, 'id': '24:1219', 
+  'synthName': 'hat' ) ]));
+TouchUber.setLoop(1,LoopRecording(8.0, [ ( 'id': '0:1281', 'synthName': 'sawbass', 'beat': 0.049414661000355, 'args': [ 'freq', 97.998858995437 ], 
+  'type': 'note_start' ), ( 'id': '0:1281', 'synthName': 'sawbass', 'beat': 1.5305158269998, 'type': 'note_end' ), ( 'id': '0:1291', 'synthName': 'sawbass', 'beat': 1.5800440150001, 'args': [ 'freq', 130.8127826503 ], 
+  'type': 'note_start' ), ( 'id': '0:1295', 'synthName': 'sawbass', 'beat': 2.4989192790003, 'args': [ 'freq', 116.54094037952 ], 
+  'type': 'note_start' ), ( 'id': '0:1291', 'synthName': 'sawbass', 'beat': 2.4989192790003, 'args': [ 'freq', 130.8127826503 ], 
+  'type': 'note_set' ), ( 'id': '0:1295', 'synthName': 'sawbass', 'beat': 2.5102254930002, 'args': [ 'freq', 116.54094037952 ], 
+  'type': 'note_set' ), ( 'id': '0:1291', 'synthName': 'sawbass', 'beat': 2.5102254930002, 'type': 'note_end' ), ( 'id': '0:1297', 'synthName': 'sawbass', 'beat': 2.9471393810004, 'args': [ 'freq', 110.0 ], 
+  'type': 'note_start' ), ( 'id': '0:1295', 'synthName': 'sawbass', 'beat': 2.9471393810004, 'args': [ 'freq', 116.54094037952 ], 
+  'type': 'note_set' ), ( 'id': '0:1297', 'synthName': 'sawbass', 'beat': 2.9803677949999, 'args': [ 'freq', 110.0 ], 
+  'type': 'note_set' ), ( 'id': '0:1295', 'synthName': 'sawbass', 'beat': 2.9803677949999, 'type': 'note_end' ), ( 'id': '0:1306', 'synthName': 'sawbass', 'beat': 4.1386601830004, 'args': [ 'freq', 97.998858995437 ], 
+  'type': 'note_start' ), ( 'id': '0:1297', 'synthName': 'sawbass', 'beat': 4.1386601830004, 'args': [ 'freq', 110.0 ], 
+  'type': 'note_set' ), ( 'id': '0:1306', 'synthName': 'sawbass', 'beat': 4.2005822209999, 'args': [ 'freq', 97.998858995437 ], 
+  'type': 'note_set' ), ( 'id': '0:1297', 'synthName': 'sawbass', 'beat': 4.2005822209999, 'type': 'note_end' ), ( 'id': '0:1306', 'synthName': 'sawbass', 'beat': 5.6184284289998, 'args': [ 'freq', 97.998858995437 ], 
+  'type': 'note_set' ), ( 'id': '0:1313', 'synthName': 'sawbass', 'beat': 5.6184284289998, 'args': [ 'freq', 130.8127826503 ], 
+  'type': 'note_start' ), ( 'id': '0:1306', 'synthName': 'sawbass', 'beat': 5.6263698830003, 'type': 'note_end' ), ( 'id': '0:1313', 'synthName': 'sawbass', 'beat': 5.6263698830003, 'args': [ 'freq', 130.8127826503 ], 
+  'type': 'note_set' ), ( 'id': '0:1318', 'synthName': 'sawbass', 'beat': 6.5691987470004, 'args': [ 'freq', 116.54094037952 ], 
+  'type': 'note_start' ), ( 'id': '0:1313', 'synthName': 'sawbass', 'beat': 6.5691987470004, 'args': [ 'freq', 130.8127826503 ], 
+  'type': 'note_set' ), ( 'id': '0:1318', 'synthName': 'sawbass', 'beat': 6.5809650229999, 'args': [ 'freq', 116.54094037952 ], 
+  'type': 'note_set' ), ( 'id': '0:1313', 'synthName': 'sawbass', 'beat': 6.5809650229999, 'type': 'note_end' ), ( 'id': '0:1323', 'synthName': 'sawbass', 'beat': 7.0764386169999, 'args': [ 'freq', 110.0 ], 
+  'type': 'note_start' ), ( 'id': '0:1318', 'synthName': 'sawbass', 'beat': 7.0764386169999, 'args': [ 'freq', 116.54094037952 ], 
+  'type': 'note_set' ), ( 'id': '0:1323', 'synthName': 'sawbass', 'beat': 7.0823147389997, 'args': [ 'freq', 110.0 ], 
+  'type': 'note_set' ), ( 'id': '0:1318', 'synthName': 'sawbass', 'beat': 7.0823147389997, 'type': 'note_end' ), ( 'id': '0:1323', 'synthName': 'sawbass', 'beat': 8.0, 'args': [  ], 
+  'type': 'note_end' ) ]));
+TouchUber.setLoop(2,LoopRecording(8.0, [ ( 'id': '0:4518', 'synthName': 'blip', 'beat': 0.073036881483063, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4518', 'synthName': 'blip', 'beat': 0.30991419848317, 'type': 'note_end' ), ( 'id': '0:4520', 'synthName': 'blip', 'beat': 0.41050980548346, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4520', 'synthName': 'blip', 'beat': 0.50949957548312, 'type': 'note_end' ), ( 'id': '0:4522', 'synthName': 'blip', 'beat': 0.7527689414834, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4522', 'synthName': 'blip', 'beat': 0.92223093948326, 'type': 'note_end' ), ( 'id': '0:4523', 'synthName': 'blip', 'beat': 0.98713869948335, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4523', 'synthName': 'blip', 'beat': 1.2477961354831, 'type': 'note_end' ), ( 'id': '0:4528', 'synthName': 'blip', 'beat': 1.3540406414833, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4528', 'synthName': 'blip', 'beat': 1.4820908934831, 'type': 'note_end' ), ( 'id': '0:4531', 'synthName': 'blip', 'beat': 1.6971880444831, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4531', 'synthName': 'blip', 'beat': 1.9053543304832, 'type': 'note_end' ), ( 'id': '0:4532', 'synthName': 'blip', 'beat': 2.0286982324834, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4532', 'synthName': 'blip', 'beat': 2.2808551444833, 'type': 'note_end' ), ( 'id': '0:4536', 'synthName': 'blip', 'beat': 2.3559014074832, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4536', 'synthName': 'blip', 'beat': 2.4979541704835, 'type': 'note_end' ), ( 'id': '0:4539', 'synthName': 'blip', 'beat': 2.6992329284832, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4539', 'synthName': 'blip', 'beat': 2.9582666274833, 'type': 'note_end' ), ( 'id': '0:4541', 'synthName': 'blip', 'beat': 3.0143691654831, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4541', 'synthName': 'blip', 'beat': 3.2916363684832, 'type': 'note_end' ), ( 'id': '0:4546', 'synthName': 'blip', 'beat': 3.4079046114831, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4546', 'synthName': 'blip', 'beat': 3.4816640524833, 'type': 'note_end' ), ( 'id': '0:4548', 'synthName': 'blip', 'beat': 3.7336839944834, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4548', 'synthName': 'blip', 'beat': 3.8996873564835, 'type': 'note_end' ), ( 'id': '0:4549', 'synthName': 'blip', 'beat': 4.0225136284831, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4549', 'synthName': 'blip', 'beat': 4.2968662754835, 'type': 'note_end' ), ( 'id': '0:4554', 'synthName': 'blip', 'beat': 4.3710348334831, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4554', 'synthName': 'blip', 'beat': 4.5176159414833, 'type': 'note_end' ), ( 'id': '0:4556', 'synthName': 'blip', 'beat': 4.7230589264833, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4556', 'synthName': 'blip', 'beat': 4.9179161504832, 'type': 'note_end' ), ( 'id': '0:4557', 'synthName': 'blip', 'beat': 5.0366781354834, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4557', 'synthName': 'blip', 'beat': 5.2944353874833, 'type': 'note_end' ), ( 'id': '0:4562', 'synthName': 'blip', 'beat': 5.3543532564833, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4562', 'synthName': 'blip', 'beat': 5.507747914483, 'type': 'note_end' ), ( 'id': '0:4565', 'synthName': 'blip', 'beat': 5.6908617414834, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4565', 'synthName': 'blip', 'beat': 5.9355045934832, 'type': 'note_end' ), ( 'id': '0:4566', 'synthName': 'blip', 'beat': 6.0518768164831, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4566', 'synthName': 'blip', 'beat': 6.3192150394831, 'type': 'note_end' ), ( 'id': '0:4570', 'synthName': 'blip', 'beat': 6.4069548744834, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4570', 'synthName': 'blip', 'beat': 6.5488970684834, 'type': 'note_end' ), ( 'id': '0:4573', 'synthName': 'blip', 'beat': 6.7593943324833, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4573', 'synthName': 'blip', 'beat': 6.9638420464831, 'type': 'note_end' ), ( 'id': '0:4578', 'synthName': 'blip', 'beat': 7.1027031524833, 'args': [ 'freq', 523.2511306012 ], 
+  'type': 'note_start' ), ( 'id': '0:4578', 'synthName': 'blip', 'beat': 7.3523789074831, 'type': 'note_end' ), ( 'id': '0:4580', 'synthName': 'blip', 'beat': 7.3900692234835, 'args': [ 'freq', 659.25511382574 ], 
+  'type': 'note_start' ), ( 'id': '0:4580', 'synthName': 'blip', 'beat': 7.5271280284834, 'type': 'note_end' ), ( 'id': '0:4582', 'synthName': 'blip', 'beat': 7.7479701304834, 'args': [ 'freq', 783.9908719635 ], 
+  'type': 'note_start' ), ( 'id': '0:4582', 'synthName': 'blip', 'beat': 7.9469986334831, 'type': 'note_end' ) ]));
+TouchUber.setLoop(3,LoopRecording(nil, [  ]));
