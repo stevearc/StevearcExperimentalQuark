@@ -5,6 +5,13 @@ FXFilterDataStore {
     ^super.newCopyArgs(enabled, wet, freq, width)
   }
   storeArgs { ^[enabled, wet, freq, width] }
+  storeOn { |stream|
+    if (enabled) {
+      super.storeOn(stream);
+    } {
+      stream <<< nil;
+    }
+  }
 
   enabled_ { |newval|
     if (newval != enabled) {

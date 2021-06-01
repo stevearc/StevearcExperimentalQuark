@@ -8,6 +8,13 @@ FXDelayDataStore {
     ^instance;
   }
   storeArgs { ^[enabled, quantize, delayTime, decayTime, decayMul] }
+  storeOn { |stream|
+    if (enabled) {
+      super.storeOn(stream);
+    } {
+      stream <<< nil;
+    }
+  }
 
   enabled_ { |newval|
     if (newval != enabled) {

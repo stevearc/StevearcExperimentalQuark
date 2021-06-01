@@ -1,6 +1,6 @@
 TouchUber : TouchOSCResponder {
   classvar <>default, numKeyboards=3;
-  var keys, fxboard, pads;
+  var keys, fxboard, pads, lastSave, saveRoutine;
   *initClass {
     default = this.new;
   }
@@ -72,10 +72,12 @@ TouchUber : TouchOSCResponder {
 
   *save { |filename| ^this.default.save(filename) }
   save { |filename|
-    var path = PathName(filename);
+    var path;
+    path = PathName(filename ? lastSave);
     if (path.extension == "") {
       path = PathName(filename ++ ".scd");
     };
+    lastSave = path.fullPath;
     File.mkdir(path.pathOnly);
     File.use(path.fullPath, "w", { |f| f.write(this.serializeSynths); });
   }
@@ -86,6 +88,7 @@ TouchUber : TouchOSCResponder {
     if (path.extension == "") {
       path = PathName(filename ++ ".scd");
     };
+    lastSave = path.fullPath;
     path.fullPath.load;
   }
 
@@ -95,9 +98,28 @@ TouchUber : TouchOSCResponder {
     ^Pn(synth.asEvent);
   }
 
-  *synthBus { |name| ^this.default.synthBus(name) }
-  synthBus { |name|
-    ^pads.store.getSynth(name).bus;
+  *getSynth { |name| ^this.default.getSynth(name) }
+  getSynth { |name|
+    ^pads.store.getSynth(name);
+  }
+
+  *autosave { |filename, interval=10| ^this.default.autosave(filename, interval) }
+  autosave { |filename, interval=10|
+    this.stopAutosave;
+    saveRoutine = Task({
+      loop {
+        interval.wait;
+        this.save(filename);
+      }
+    }).start;
+    CmdPeriod.doOnce {this.stopAutosave};
+  }
+  *stopAutosave { ^this.default.stopAutosave }
+  stopAutosave {
+    if (saveRoutine.notNil) {
+      saveRoutine.stop;
+      saveRoutine = nil;
+    };
   }
 
   *stop { ^this.default.stop }

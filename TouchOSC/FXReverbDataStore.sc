@@ -5,6 +5,13 @@ FXReverbDataStore {
     ^super.newCopyArgs(enabled, wet, room);
   }
   storeArgs { ^[enabled, wet, room] }
+  storeOn { |stream|
+    if (enabled) {
+      super.storeOn(stream);
+    } {
+      stream <<< nil;
+    }
+  }
 
   enabled_ { |newval|
     if (newval != enabled) {
