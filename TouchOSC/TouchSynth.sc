@@ -187,6 +187,10 @@ TouchSynth {
     stream << ")";
   }
 
+  asP {
+    ^Pn(this.asEvent);
+  }
+
   asEvent {
     var ev = Event.new;
     ev[\instrument] = synthName;

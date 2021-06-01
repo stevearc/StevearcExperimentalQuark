@@ -111,14 +111,8 @@ TouchUber : TouchOSCResponder {
     path.fullPath.load;
   }
 
-  *pSynth { |name| ^this.default.pSynth(name) }
-  pSynth { |name|
-    var synth = pads.store.getSynth(name);
-    ^Pn(synth.asEvent);
-  }
-
-  *getSynth { |name| ^this.default.getSynth(name) }
-  getSynth { |name|
+  add { |name| ^default.at(name) }
+  at { |name|
     ^pads.store.getSynth(name);
   }
 

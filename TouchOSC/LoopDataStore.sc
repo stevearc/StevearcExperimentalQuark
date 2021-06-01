@@ -17,6 +17,13 @@ LoopDataStore {
   beatsPerBar {
     ^TempoClock.beatsPerBar;
   }
+  recordBars_ { |newval|
+    recordBars = newval.round.asInteger;
+    this.markChanged;
+  }
+  barsLabel {
+    ^"% bars".format(recordBars);
+  }
   bpm {
     ^(TempoClock.tempo * 60).asInteger;
   }

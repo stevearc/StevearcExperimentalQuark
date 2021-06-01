@@ -174,6 +174,8 @@ LoopUI : TouchStoreUI {
       TouchControlLabel.fromStore('/looper/tempo/label', store, \bpm),
       TouchControlLabel.fromStore('/looper/tempo/name', store, \tempoString),
       TouchControlRange.fromStore('/looper/tempo', store, \bpm, [40, 220]),
+      TouchControlRange.fromStore('/looper/numBars', store, \recordBars, [1, 8]),
+      TouchControlLabel.fromStore('/looper/numBars/label', store, \barsLabel),
       TouchControlToggle.fromStore('/looper/quantize', store, \quantize),
       TouchControlLabel.fromStore('/looper/countdown', store, \countdown),
       TouchControlLabel.fromStore('/looper/recording', store, \recording),
