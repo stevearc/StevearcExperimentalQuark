@@ -14,7 +14,7 @@ LoopController : TouchOSCResponder {
     this.prAddChild(LoopUI.new(store));
   }
 
-  serializeLoops {
+  recordings {
     ^channels.collect(_.recording);
   }
 
@@ -24,6 +24,7 @@ LoopController : TouchOSCResponder {
 }
 
 LoopChannel : TouchOSCResponder {
+  classvar fudgeFactor=0.5;
   var padsStore, loopStore, store, <recording, playing=false;
   *new { |padsStore, loopStore, store, index|
     ^super.new.init(padsStore, loopStore, store, index);
@@ -103,7 +104,7 @@ LoopChannel : TouchOSCResponder {
 
     // actually start recording riiiight before the first bar, to catch tiny
     // imperfections in playing
-    TempoClock.schedAbs(store.recordStartTime - (1/16), {
+    TempoClock.schedAbs(store.recordStartTime - fudgeFactor, {
       if (store.shouldRecord) {
         store.recording = true;
       };
@@ -143,6 +144,7 @@ LoopChannel : TouchOSCResponder {
           recording.clear;
         };
         recording.duration = loopStore.recordBars * loopStore.beatsPerBar;
+        recording.startTime = TempoClock.beats + fudgeFactor;
         padsStore.padTouchSynths.do { |synth|
           recording.record(synth);
         };

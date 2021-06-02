@@ -191,13 +191,24 @@ TouchSynth {
     ^Pn(this.asEvent);
   }
 
-  asEvent {
-    var ev = Event.new;
+  asEvent { |includeFreq=false|
+    var ev = Event.default;
+    var synthDesc;
     ev[\instrument] = synthName;
+    synthDesc = SynthDescLib.global[synthName];
+    if (synthDesc.isNil) {
+      Error("Could not find synth %".format(synthName)).throw;
+    };
+    if (synthDesc.controlDict[\amp].notNil) {
+      ev[\amp] = synthDesc.controlDict[\amp].defaultValue;
+    };
+    if (includeFreq and: synthDesc.controlDict[\freq].notNil) {
+      ev[\freq] = synthDesc.controlDict[\freq].defaultValue;
+    };
     forBy (0, defaultArgs.size - 1, 2) { |i|
       var key = defaultArgs[i];
       var value = defaultArgs[i+1];
-      if (key != \freq) {
+      if (key != \freq or: includeFreq) {
         ev[key] = value;
       };
     };

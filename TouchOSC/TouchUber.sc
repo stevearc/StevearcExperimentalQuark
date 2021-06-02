@@ -75,9 +75,35 @@ TouchUber : TouchOSCResponder {
     });
   }
 
+  *pRecording { |i, proxy| ^this.default.pRecording(i, proxy) }
+  pRecording { |i, proxy|
+    var recording = pads.recordings[i];
+    var events = recording.asNoteEvents.collect({ |ev|
+      var newEv = this.at(ev.synthName).asEvent(true);
+      ev.pairsDo { |key, value|
+        if (key != \beat and: (key != \synthName)) {
+          newEv[key] = value;
+        };
+      };
+      newEv;
+    });
+    var setEvents = recording.asSetEvents;
+    if (events.isEmpty) {
+      ^nil;
+    };
+    if (proxy.isNil) {
+      ^Pseq(events, inf);
+    };
+    proxy.source = Pseq(events, inf);
+    if (setEvents.notEmpty) {
+      proxy[1] = \set -> Pseq(setEvents, inf);
+    };
+    ^proxy;
+  }
+
   *serializeLoops { ^this.default.serializeLoops }
   serializeLoops {
-    var loops = pads.serializeLoops;
+    var loops = pads.recordings;
     ^String.streamContents({ |stream|
       loops.do { |recording, i|
         stream << this.class.name << ".setLoop(";

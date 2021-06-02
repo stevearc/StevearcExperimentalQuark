@@ -19,8 +19,8 @@ TouchPads : TouchOSCResponder {
     ^store.selectedSynth;
   }
 
-  serializeLoops {
-    ^loopCtl.serializeLoops;
+  recordings {
+    ^loopCtl.recordings;
   }
 
   update { |store, what|
