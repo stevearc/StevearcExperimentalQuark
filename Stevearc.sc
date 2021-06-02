@@ -72,11 +72,14 @@ SA {
     Spec.specs[\wet5] = ControlSpec(0, 1);
     Spec.specs[\fmod] = ControlSpec(0.001, 0.1, \exp);
     Spec.specs[\atk] = ControlSpec(0.001, 4, \exp);
+    Spec.specs[\att] = Spec.specs[\atk];
     Spec.specs[\decay] = ControlSpec(0.001, 2, \exp);
+    Spec.specs[\dec] = Spec.specs[\decay];
     Spec.specs[\rel] = ControlSpec(0.001, 4, \exp);
     Spec.specs[\cAtk] = ControlSpec(-8, 8, \lin, 1);
     Spec.specs[\cDec] = ControlSpec(-8, 8, \lin, 1);
     Spec.specs[\cRel] = ControlSpec(-8, 8, \lin, 1);
+    Spec.specs[\curve] = ControlSpec(-8, 8, \lin, 1);
 
     // bitcrush FX
     Spec.specs[\bits] = ControlSpec(1, 24);

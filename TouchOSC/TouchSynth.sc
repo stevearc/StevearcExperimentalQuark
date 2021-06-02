@@ -2,7 +2,7 @@ TouchSynth {
   classvar masterGroup;
   var <name, <out=0, <group, <bus, <isRunning=false,
     <store, <delayStore, <filterStore, <reverbStore,
-    delaySynth, filterSynth, reverbSynth, monitorSynth;
+    synths, delaySynth, filterSynth, reverbSynth, monitorSynth;
 
   *hydrate { |name, store, delayStore, filterStore, reverbStore|
     ^super.new.init(name, store, delayStore, filterStore, reverbStore);
@@ -11,6 +11,7 @@ TouchSynth {
     ^super.new.init(name, SynthDataStore(synthName, args ? []), nil, nil, nil);
   }
   init { |theName, theStore, theDelayStore, theFilterStore, theReverbStore|
+    synths = IdentityDictionary.new;
     name = theName;
     store = theStore;
     store.addDependant(this);
@@ -56,6 +57,13 @@ TouchSynth {
           \wet, store.wet,
           \room, store.room,
         );
+      },
+      \synthData, {
+        if (store.args.notEmpty) {
+          synths.do { |synth|
+            synth.set(*store.args);
+          };
+        };
       }
     );
   }
@@ -69,6 +77,10 @@ TouchSynth {
       if (synth.isNil) {
         synth = Synth(store.synthName, [\out, bus] ++ store.args ++ args, group, \addToHead);
         synth.register(true);
+        synths[synth.nodeID] = synth;
+        synth.onFree {
+          synths[synth.nodeID] = nil;
+        };
         this.changed(\note_start, synth.nodeID, store.args ++ args);
       } {
         if (synth.isPlaying and: args.notEmpty) {

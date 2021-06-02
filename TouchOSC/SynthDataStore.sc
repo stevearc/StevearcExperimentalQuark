@@ -3,7 +3,7 @@ SynthDataStore {
   var <synthName, <args, controls=#[], specs=#[];
 
   *initClass {
-    blacklist = Set[\freq, \pan, \out, \in, \buf, \bus];
+    blacklist = Set[\freq, \pan, \out, \in, \buf, \bus, \gate];
   }
   *new { |synthName, args=nil|
     ^super.newCopyArgs(synthName, args ? []);
