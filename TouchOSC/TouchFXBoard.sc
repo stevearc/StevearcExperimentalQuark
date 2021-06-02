@@ -1,5 +1,5 @@
 TouchFXBoard : TouchOSCResponder {
-  var reverb, delay, filter;
+  var reverb, delay, filter, synthUI;
   *new {
     ^super.new.init;
   }
@@ -10,12 +10,29 @@ TouchFXBoard : TouchOSCResponder {
     this.prAddChild(delay);
     filter = TouchFXFilter.new;
     this.prAddChild(filter);
+    synthUI = SynthParams.new;
+    this.prAddChild(synthUI);
   }
 
   attach { |touchSynth|
+    synthUI.store = touchSynth.store;
     reverb.store = touchSynth.reverbStore;
     delay.store = touchSynth.delayStore;
     filter.store = touchSynth.filterStore;
+  }
+}
+
+SynthParams : TouchStoreUI {
+  classvar numFaders=10;
+  getChildren {
+    ^numFaders.collect({ |i|
+      var j = i + 1;
+      [
+        TouchControlLabel('/synth/params/label/'++j, store, {store.specLabel(i)}),
+        TouchControlRange('/synth/params/'++j, store, {store.specValue(i)}, store.specRange(i), {|val| store.setValue(i, val)}),
+        TouchControlButton('/synth/params/reset/'++j, store, {store.resetValue(i)}),
+      ]
+    }).flat;
   }
 }
 

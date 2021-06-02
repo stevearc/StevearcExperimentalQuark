@@ -70,7 +70,6 @@ SA {
     Spec.specs[\wet3] = ControlSpec(0, 1);
     Spec.specs[\wet4] = ControlSpec(0, 1);
     Spec.specs[\wet5] = ControlSpec(0, 1);
-    Spec.specs[\amp] = ControlSpec(0, 1);
     Spec.specs[\detune] = ControlSpec(0.001, 0.1, \exp);
     // bitcrush FX
     Spec.specs[\bits] = ControlSpec(1, 24);
@@ -88,9 +87,9 @@ SA {
     Spec.specs[\vibrato] = ControlSpec(1, 32);
     Spec.specs[\vibratodepth] = ControlSpec(0.02, 10, \exp);
     // filter FX
-    Spec.specs[\hpf] = ControlSpec(20, 20000, \exp, 1);
-    Spec.specs[\lpf] = ControlSpec(20, 20000, \exp, 1);
-    Spec.specs[\bpf] = ControlSpec(20, 10000, \exp, 1);
+    Spec.specs[\hpf] = Spec.specs[\freq];
+    Spec.specs[\lpf] = Spec.specs[\freq];
+    Spec.specs[\bpf] = Spec.specs[\freq];
     Spec.specs[\bpfrq] = ControlSpec(0.1, 20);
     // formant FX
     Spec.specs[\formant] = ControlSpec(0, 8);

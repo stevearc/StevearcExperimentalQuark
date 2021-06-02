@@ -1,16 +1,19 @@
 TouchSynth {
   classvar masterGroup;
-  var <name, <synthName, <out=0, <>defaultArgs=#[], <group, <bus, <isRunning=false,
-    <delayStore, <filterStore, <reverbStore,
+  var <name, <out=0, <group, <bus, <isRunning=false,
+    <store, <delayStore, <filterStore, <reverbStore,
     delaySynth, filterSynth, reverbSynth, monitorSynth;
 
-  *new { |name=\default, synthName=\default, args=#[], delayStore, filterStore, reverbStore|
-    ^super.new.init(name, synthName, args, delayStore, filterStore, reverbStore);
+  *hydrate { |name, store, delayStore, filterStore, reverbStore|
+    ^super.new.init(name, store, delayStore, filterStore, reverbStore);
   }
-  init { |theName, theSynthName, theArgs, theDelayStore, theFilterStore, theReverbStore|
+  *new { |name=\default, synthName=\default, args=nil|
+    ^super.new.init(name, SynthDataStore(synthName, args ? []), nil, nil, nil);
+  }
+  init { |theName, theStore, theDelayStore, theFilterStore, theReverbStore|
     name = theName;
-    synthName = theSynthName;
-    defaultArgs = theArgs;
+    store = theStore;
+    store.addDependant(this);
     delayStore = theDelayStore ?? {FXDelayDataStore.new};
     delayStore.addDependant(this);
     filterStore = theFilterStore ?? {FXFilterDataStore.new};
@@ -58,15 +61,15 @@ TouchSynth {
   }
 
   makeSynth { |args|
-    ^Synth(synthName, [\out, bus] ++ defaultArgs ++ args, group, \addToHead);
+    ^Synth(store.synthName, [\out, bus] ++ store.args ++ args, group, \addToHead);
   }
 
   updateSynth { |synth, enabled ...args|
     if (enabled) {
       if (synth.isNil) {
-        synth = Synth(synthName, [\out, bus] ++ defaultArgs ++ args, group, \addToHead);
+        synth = Synth(store.synthName, [\out, bus] ++ store.args ++ args, group, \addToHead);
         synth.register(true);
-        this.changed(\note_start, synth.nodeID, defaultArgs ++ args);
+        this.changed(\note_start, synth.nodeID, store.args ++ args);
       } {
         if (synth.isPlaying and: args.notEmpty) {
           this.changed(\note_set, synth.nodeID, args);
@@ -150,6 +153,7 @@ TouchSynth {
       }).add;
       Server.default.sync;
       monitorSynth = Synth(\touchOSCMonitor, [\bus, bus, \out, out], group, \addToTail);
+      store.markChanged;
       delayStore.markChanged;
       filterStore.markChanged;
       reverbStore.markChanged;
@@ -172,15 +176,8 @@ TouchSynth {
   }
 
   storeOn { |stream|
-    stream << "TouchSynth(" <<< name << "," <<< synthName << ",[";
-    forBy (0, defaultArgs.size - 1, 2) { |i|
-      var key = defaultArgs[i];
-      var value = defaultArgs[i+1];
-      if (value.class != Buffer) {
-        stream <<< key << "," <<< value << ",";
-      }
-    };
-    stream << "],";
+    stream << "TouchSynth.hydrate(" <<< name << ",";
+    stream <<< store << ",";
     stream <<< delayStore << ",";
     stream <<< filterStore << ",";
     stream <<< reverbStore;
@@ -194,10 +191,10 @@ TouchSynth {
   asEvent { |includeFreq=false|
     var ev = Event.default;
     var synthDesc;
-    ev[\instrument] = synthName;
-    synthDesc = SynthDescLib.global[synthName];
+    ev[\instrument] = store.synthName;
+    synthDesc = SynthDescLib.global[store.synthName];
     if (synthDesc.isNil) {
-      Error("Could not find synth %".format(synthName)).throw;
+      Error("Could not find synth %".format(store.synthName)).throw;
     };
     if (synthDesc.controlDict[\amp].notNil) {
       ev[\amp] = synthDesc.controlDict[\amp].defaultValue;
@@ -205,9 +202,7 @@ TouchSynth {
     if (includeFreq and: synthDesc.controlDict[\freq].notNil) {
       ev[\freq] = synthDesc.controlDict[\freq].defaultValue;
     };
-    forBy (0, defaultArgs.size - 1, 2) { |i|
-      var key = defaultArgs[i];
-      var value = defaultArgs[i+1];
+    store.args.doPairs { |key, value|
       if (key != \freq or: includeFreq) {
         ev[key] = value;
       };

@@ -165,36 +165,31 @@ TouchControlMultiButton : TouchControl {
 }
 
 TouchControlRange : TouchControl {
-  var <>range;
-  *new { |path, store, readValue, range, onChange, onTouchStart, onTouchEnd|
-    ^super.new(path, store, readValue, onChange, onTouchStart, onTouchEnd).init(range);
+  var <>spec;
+  *new { |path, store, readValue, spec, onChange, onTouchStart, onTouchEnd|
+    ^super.new(path, store, readValue, onChange, onTouchStart, onTouchEnd).init(spec);
   }
-  *fromStore { |path, store, key, range, onTouchStart, onTouchEnd|
-    ^super.fromStore(path, store, key, onTouchStart, onTouchEnd).init(range);
+  *fromStore { |path, store, key, spec, onTouchStart, onTouchEnd|
+    ^super.fromStore(path, store, key, onTouchStart, onTouchEnd).init(spec);
   }
-  init { |range|
-    this.range = range;
+  init { |spec|
+    if (spec.isArray) {
+      spec = ControlSpec(*spec);
+    };
+    this.spec = spec;
   }
   convertFromClient { |value|
-    if (range.isNil) {
+    if (spec.isNil) {
       ^value;
     } {
-      if (range.size == 3) {
-        ^value.lincurve(0,1,range[0],range[1],range[2]);
-      } {
-        ^value.linlin(0,1,range[0],range[1]);
-      }
+      ^spec.map(value);
     }
   }
   convertToClient { |value|
-    if (range.isNil) {
+    if (spec.isNil) {
       ^value;
     } {
-      if (range.size == 3) {
-        ^value.curvelin(range[0],range[1],0,1,range[2]);
-      } {
-        ^value.linlin(range[0],range[1],0,1);
-      }
+      ^spec.unmap(value);
     }
   }
 }
