@@ -24,13 +24,11 @@ SynthDataStore {
     ^"%: %".format(controls[i].name, this.specValue(i).round(0.001));
   }
   specRange { |i|
-    var control = controls[i];
     var spec = specs[i];
-    var warp;
-    if (control.isNil) {
+    if (spec.isNil) {
       ^[0,1];
     };
-    ^[spec.minval, spec.maxval, spec.warp];
+    ^spec;
   }
   specValue { |i|
     var control = controls[i];

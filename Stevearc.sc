@@ -70,7 +70,14 @@ SA {
     Spec.specs[\wet3] = ControlSpec(0, 1);
     Spec.specs[\wet4] = ControlSpec(0, 1);
     Spec.specs[\wet5] = ControlSpec(0, 1);
-    Spec.specs[\detune] = ControlSpec(0.001, 0.1, \exp);
+    Spec.specs[\fmod] = ControlSpec(0.001, 0.1, \exp);
+    Spec.specs[\atk] = ControlSpec(0.001, 4, \exp);
+    Spec.specs[\decay] = ControlSpec(0.001, 2, \exp);
+    Spec.specs[\rel] = ControlSpec(0.001, 4, \exp);
+    Spec.specs[\cAtk] = ControlSpec(-8, 8, \lin, 1);
+    Spec.specs[\cDec] = ControlSpec(-8, 8, \lin, 1);
+    Spec.specs[\cRel] = ControlSpec(-8, 8, \lin, 1);
+
     // bitcrush FX
     Spec.specs[\bits] = ControlSpec(1, 24);
     Spec.specs[\crush] = ControlSpec(0, 44100, 2);
