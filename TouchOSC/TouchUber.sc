@@ -1,5 +1,5 @@
 TouchUber : TouchOSCResponder {
-  classvar <>default, numKeyboards=3;
+  classvar <>default, numKeyboards=2;
   var keys, fxboard, pads, lastSave, saveRoutine;
   *initClass {
     default = this.new;

@@ -1,5 +1,5 @@
 LoopController : TouchOSCResponder {
-  classvar numChannels=4;
+  classvar numChannels=6;
   var channels, <store;
   *new { |padsStore|
     ^super.new.init(padsStore);

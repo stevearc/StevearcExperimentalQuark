@@ -66,20 +66,20 @@ SA {
 
   *addDefaultSpecs {
     Spec.specs[\wet1] = ControlSpec(0, 1);
-    Spec.specs[\wet2] = ControlSpec(0, 1);
-    Spec.specs[\wet3] = ControlSpec(0, 1);
-    Spec.specs[\wet4] = ControlSpec(0, 1);
-    Spec.specs[\wet5] = ControlSpec(0, 1);
-    Spec.specs[\fmod] = ControlSpec(0.001, 0.1, \exp);
+    Spec.specs[\wet2] = Spec.specs[\wet1];
+    Spec.specs[\wet3] = Spec.specs[\wet1];
+    Spec.specs[\wet4] = Spec.specs[\wet1];
+    Spec.specs[\wet5] = Spec.specs[\wet1];
+    Spec.specs[\fmod] = ControlSpec(0.001, 1, \exp);
     Spec.specs[\atk] = ControlSpec(0.001, 4, \exp);
     Spec.specs[\att] = Spec.specs[\atk];
     Spec.specs[\decay] = ControlSpec(0.001, 2, \exp);
     Spec.specs[\dec] = Spec.specs[\decay];
     Spec.specs[\rel] = ControlSpec(0.001, 4, \exp);
-    Spec.specs[\cAtk] = ControlSpec(-8, 8, \lin, 1);
-    Spec.specs[\cDec] = ControlSpec(-8, 8, \lin, 1);
-    Spec.specs[\cRel] = ControlSpec(-8, 8, \lin, 1);
     Spec.specs[\curve] = ControlSpec(-8, 8, \lin, 1);
+    Spec.specs[\cAtk] = Spec.specs[\curve];
+    Spec.specs[\cDec] = Spec.specs[\curve];
+    Spec.specs[\cRel] = Spec.specs[\curve];
 
     // bitcrush FX
     Spec.specs[\bits] = ControlSpec(1, 24);
@@ -148,6 +148,19 @@ SA {
     Spec.specs[\phMindelay] = ControlSpec(0.001, 1, \exp);
     Spec.specs[\phDecay] = ControlSpec(0.1, 5, \exp);
     Spec.specs[\phRate] = ControlSpec(0.1, 100, \exp);
+    // Chorus FX
+    Spec.specs[\chPhase] = ControlSpec(0, 2pi);
+    Spec.specs[\chSpeed] = ControlSpec(0.001, 10, \exp);
+    Spec.specs[\chDepth] = ControlSpec(0.0001, 0.25, \exp);
+    Spec.specs[\chPredelay] = ControlSpec(0.0001, 0.2, \exp, 0, 0.001);
+    // Filtered Chorus FX
+    Spec.specs[\chfPhase] = ControlSpec(0, 2pi);
+    Spec.specs[\chfCrossover] = Spec.specs[\freq];
+    Spec.specs[\chfXfade] = ControlSpec(-1, 1);
+    Spec.specs[\chfSpeed] = ControlSpec(0.001, 10, \exp);
+    Spec.specs[\chfDepth] = ControlSpec(0.0001, 0.25, \exp);
+    Spec.specs[\chfPredelay] = ControlSpec(0.0001, 0.2, \exp, 0, 0.001);
+
   }
 
   *quit {

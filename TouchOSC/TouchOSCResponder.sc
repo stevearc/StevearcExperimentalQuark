@@ -45,7 +45,8 @@ TouchOSCResponder {
       this.stop;
     };
     this.prAddFunc('/ping', { |msg, time, addr, port|
-      this.sync(false);
+      var isStartup = msg[1].asBoolean;
+      this.sync(false, isStartup);
     });
     children.do { |c|
       c.start;

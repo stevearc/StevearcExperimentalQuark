@@ -22,6 +22,9 @@ PadsDataStore {
     if (enabled) {
       padTouchSynths.at(row, col).stop;
     };
+    if (touchSynth.class == Symbol) {
+      touchSynth = TouchSynth(touchSynth, touchSynth);
+    };
     padTouchSynths.put(row, col, touchSynth);
     this.markChanged;
   }
@@ -30,6 +33,10 @@ PadsDataStore {
       enabled = newval;
       this.markChanged;
     };
+  }
+  setPadState { |row, col, down|
+    padsDown.put(row, col, down);
+    this.markChanged;
   }
   markChanged {
     if (enabled) {

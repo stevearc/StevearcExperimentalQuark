@@ -23,16 +23,32 @@ TouchFXBoard : TouchOSCResponder {
 }
 
 SynthParams : TouchStoreUI {
-  classvar numFaders=10;
+  classvar fadersPerColumn=#[10,9];
   getChildren {
-    ^numFaders.collect({ |i|
-      var j = i + 1;
-      [
-        TouchControlLabel('/synth/params/label/'++j, store, {store.specLabel(i)}),
-        TouchControlRange('/synth/params/'++j, store, {store.specValue(i)}, store.specRange(i), {|val| store.setValue(i, val)}),
-        TouchControlButton('/synth/params/reset/'++j, store, {store.resetValue(i)}),
-      ]
-    }).flat;
+    var ret = Array.new;
+    var idx = 0;
+    fadersPerColumn.do { |numFaders, i|
+      var col = i + 1;
+      var n = idx;
+      ret = ret.add(
+        TouchControlLabel("/synth/params%/visible".format(col), store, {store.numControls > n}),
+      );
+      numFaders.do { |j|
+        var row = j + 1;
+        var n = idx;
+        ret = ret.add(
+          TouchControlLabel("/synth/params%/label/%".format(col, row), store, {store.specLabel(n)}),
+        );
+        ret = ret.add(
+          TouchControlRange("/synth/params%/%".format(col, row), store, {store.specValue(n)}, store.specRange(n), {|val| store.setValue(n, val)}),
+        );
+        ret = ret.add(
+          TouchControlButton("/synth/params%/reset/%".format(col, row), store, {store.resetValue(n)}),
+        );
+        idx = idx + 1;
+      };
+    };
+    ^ret;
   }
 }
 

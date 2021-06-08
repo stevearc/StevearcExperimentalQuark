@@ -49,7 +49,12 @@ TouchPadsUI : TouchStoreUI {
   getChildren {
     var children = [
       TouchControlLabel.fromStore('/synthName', store, \selectedSynthName),
-      TouchControlMultiButton.fromStore('/pads', store, \padsDown, [4,4]),
+      TouchControlGrid.d2("/pads/%/%", [4,4], {|path, row, col|
+        TouchControlButton(path, store, {|down| store.setPadState(row, col, down) });
+      }),
+      TouchControlGrid.d2("/pads/label/%/%", [4,4], {|path, row, col|
+        TouchControlLabel(path, store, {|store| store.padTouchSynths.at(row, col).name});
+      });
     ];
     store.padTouchSynths.rowsDo { |row, i|
       row.size.do { |j|

@@ -39,7 +39,7 @@ TouchControl : TouchOSCResponder {
   }
   prAddTouchListener {
     this.prAddFunc(path ++ "/z", { |msg|
-      var newTouch = msg[1] != 0;
+      var newTouch = msg[1].asBoolean;
       if (isTouching != newTouch) {
         isTouching = newTouch;
         if (isTouching) {
@@ -50,7 +50,7 @@ TouchControl : TouchOSCResponder {
           if (onTouchEnd.notNil) {
             onTouchEnd.value;
           };
-          this.sync;
+          this.sync(false, true);
         };
       };
     });
@@ -71,6 +71,26 @@ TouchControl : TouchOSCResponder {
   }
   update { |store, what|
     this.sync(false);
+  }
+}
+
+TouchControlGrid : TouchOSCResponder {
+  *d1 { |path, size, factory|
+    var instance = super.new;
+    size.do { |i|
+      instance.prAddChild(factory.value(path.format(i+1), i));
+    };
+    ^instance;
+  }
+
+  *d2 { |path, dimensions, factory|
+    var instance = super.new;
+    dimensions[0].do { |row|
+      dimensions[1].do { |col|
+        instance.prAddChild(factory.value(path.format(row+1, col+1), row, col));
+      };
+    };
+    ^instance;
   }
 }
 
@@ -125,43 +145,6 @@ TouchControlButton : TouchControl {
   }
   // Don't send any info to the client
   syncImpl { }
-}
-
-TouchControlMultiButton : TouchControl {
-  var <>dimensions;
-  *new { |path, store, dimensions, onChange, onTouchStart, onTouchEnd|
-    ^super.new(path, store, nil, onChange, onTouchStart, onTouchEnd).init(dimensions);
-  }
-  *fromStore { |path, store, key, dimensions, onTouchStart, onTouchEnd|
-    var onChange = { |val, row, col|
-      var arr2d = store.perform(key);
-      arr2d.put(row, col, val);
-      store.markChanged;
-    };
-    ^super.new(path, store, nil, onChange, onTouchStart, onTouchEnd).init(dimensions);
-  }
-  init { |dimensions|
-    this.dimensions = dimensions;
-  }
-  convertFromClient { |value|
-    ^(value != 0);
-  }
-  convertToClient { |value|
-    ^value.asInteger;
-  }
-  // Don't send any info to the client
-  syncImpl { }
-  startImpl {
-    this.prAddTouchListener;
-    this.dimensions[0].do { |row|
-      this.dimensions[1].do { |col|
-        this.prAddFunc("%/%/%".format(path,row+1,col+1), { |msg|
-          var newval = this.convertFromClient(msg[1]);
-          this.onChange.value(newval, row, col);
-        });
-      };
-    };
-  }
 }
 
 TouchControlRange : TouchControl {

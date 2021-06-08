@@ -15,6 +15,9 @@ SynthDataStore {
     this.markChanged;
   }
 
+  numControls {
+    ^controls.size;
+  }
   specLabel { |i|
     var control = controls[i];
     var rounded;

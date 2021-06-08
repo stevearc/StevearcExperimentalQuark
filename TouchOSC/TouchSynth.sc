@@ -214,7 +214,7 @@ TouchSynth {
     if (includeFreq and: synthDesc.controlDict[\freq].notNil) {
       ev[\freq] = synthDesc.controlDict[\freq].defaultValue;
     };
-    store.args.doPairs { |key, value|
+    store.args.pairsDo { |key, value|
       if (key != \freq or: includeFreq) {
         ev[key] = value;
       };
