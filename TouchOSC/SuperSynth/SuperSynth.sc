@@ -1,4 +1,4 @@
-TouchUber : TouchOSCResponder {
+SuperSynth : TouchOSCResponder {
   classvar <>default, numKeyboards=2;
   var keys, fxboard, pads, lastSave, saveRoutine;
   *initClass {
