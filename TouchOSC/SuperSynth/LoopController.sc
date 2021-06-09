@@ -1,6 +1,6 @@
 LoopController : TouchOSCResponder {
   classvar numChannels=6;
-  var channels, <store;
+  var <channels, <store;
   *new { |padsStore|
     ^super.new.init(padsStore);
   }
@@ -16,10 +16,6 @@ LoopController : TouchOSCResponder {
 
   recordings {
     ^channels.collect(_.recording);
-  }
-
-  setLoop { |i, recording|
-    channels[i].recording = recording;
   }
 }
 
@@ -43,13 +39,13 @@ LoopChannel : TouchOSCResponder {
     recording = theRecording;
     recording.store = loopStore;
   }
-  play {
+  prHandlePlay {
     var startBeat = TempoClock.nextTimeOnGrid(recording.duration);
     var synths = IdentityDictionary.new;
     // Loop playback
     TempoClock.schedAbs(startBeat + recording.duration, {
       if (store.playing) {
-        this.play;
+        this.prHandlePlay;
       } {
         synths.do { |synth|
           if (synth.isRunning) {
@@ -85,6 +81,10 @@ LoopChannel : TouchOSCResponder {
         };
       });
     };
+  }
+
+  play { |playing=true|
+    store.playing = playing;
   }
 
   start {
@@ -157,7 +157,7 @@ LoopChannel : TouchOSCResponder {
 
     if (store.playing) {
       if (playing.not) {
-        this.play;
+        this.prHandlePlay;
         playing = true;
       };
     } {

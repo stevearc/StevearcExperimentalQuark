@@ -25,7 +25,12 @@ SuperSynth : TouchOSCResponder {
 
   *setLoop { |i, recording| ^this.default.setLoop(i, recording) }
   setLoop { |i, recording|
-    pads.loopCtl.setLoop(i, recording);
+    pads.loopCtl.channels[i].recording = recording;
+  }
+
+  *playLoop { |i, play=true| ^this.default.playLoop(i, play) }
+  playLoop { |i, play=true|
+    pads.loopCtl.channels[i].play(play);
   }
 
   *start { ^this.default.start }

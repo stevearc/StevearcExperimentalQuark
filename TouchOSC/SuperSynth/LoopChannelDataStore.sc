@@ -34,6 +34,6 @@ LoopChannelDataStore {
     this.markChanged;
   }
   markChanged {
-    this.changed(\loop);
+    this.changed(\loopchannel);
   }
 }

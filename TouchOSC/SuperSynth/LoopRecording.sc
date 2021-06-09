@@ -4,7 +4,7 @@ LoopRecording {
     ^super.new.init(nil, duration, events);
   }
   *empty { |store|
-    ^super.new.init(store);
+    ^super.new.init(store, 1);
   }
   init { |theStore, theDuration, theEvents|
     store = theStore;

@@ -154,12 +154,8 @@ SA {
     Spec.specs[\chDepth] = ControlSpec(0.0001, 0.25, \exp);
     Spec.specs[\chPredelay] = ControlSpec(0.0001, 0.2, \exp, 0, 0.001);
     // Filtered Chorus FX
-    Spec.specs[\chfPhase] = ControlSpec(0, 2pi);
-    Spec.specs[\chfCrossover] = Spec.specs[\freq];
-    Spec.specs[\chfXfade] = ControlSpec(-1, 1);
-    Spec.specs[\chfSpeed] = ControlSpec(0.001, 10, \exp);
-    Spec.specs[\chfDepth] = ControlSpec(0.0001, 0.25, \exp);
-    Spec.specs[\chfPredelay] = ControlSpec(0.0001, 0.2, \exp, 0, 0.001);
+    Spec.specs[\chCrossover] = Spec.specs[\freq];
+    Spec.specs[\chXfade] = ControlSpec(-1, 1);
 
   }
 

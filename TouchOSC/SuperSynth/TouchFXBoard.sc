@@ -1,5 +1,5 @@
 TouchFXBoard : TouchOSCResponder {
-  var reverb, delay, filter, synthUI;
+  var reverb, delay, filter, chorus, synthUI;
   *new {
     ^super.new.init;
   }
@@ -10,6 +10,8 @@ TouchFXBoard : TouchOSCResponder {
     this.prAddChild(delay);
     filter = TouchFXFilter.new;
     this.prAddChild(filter);
+    chorus = TouchFXChorus.new;
+    this.prAddChild(chorus);
     synthUI = SynthParams.new;
     this.prAddChild(synthUI);
   }
@@ -19,11 +21,12 @@ TouchFXBoard : TouchOSCResponder {
     reverb.store = touchSynth.reverbStore;
     delay.store = touchSynth.delayStore;
     filter.store = touchSynth.filterStore;
+    chorus.store = touchSynth.chorusStore;
   }
 }
 
 SynthParams : TouchStoreUI {
-  classvar fadersPerColumn=#[10,9];
+  classvar fadersPerColumn=#[8,8];
   getChildren {
     var ret = Array.new;
     var idx = 0;
@@ -83,6 +86,17 @@ TouchFXFilter : TouchStoreUI {
       TouchControlRange.fromStore('/fx/filter/wet', store, \wet),
       TouchControlRange.fromStore('/fx/filter/freq', store, \freq, [60,16000,6]),
       TouchControlRange.fromStore('/fx/filter/width', store, \width, [0.1,1]),
+    ];
+  }
+}
+
+TouchFXChorus : TouchStoreUI {
+  getChildren {
+    ^[
+      TouchControlToggle.fromStore('/fx/chorus/toggle', store, \enabled),
+      TouchControlRange.fromStore('/fx/chorus/speed', store, \speed, ControlSpec(0.001, 10, \exp)),
+      TouchControlRange.fromStore('/fx/chorus/depth', store, \depth, ControlSpec(0.0001, 0.25, \exp)),
+      TouchControlRange.fromStore('/fx/chorus/predelay', store, \predelay, ControlSpec(0.0001, 0.2, \exp, 0, 0.001)),
     ];
   }
 }

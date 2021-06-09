@@ -1,7 +1,6 @@
 SynthDef(\soundIn, {
   |out=0, amp=1, pan=0, in=0|
   var sig = SoundIn.ar(in);
-  sig = Compander.ar(sig, sig);
   sig = Pan2.ar(sig, pan);
   Out.ar(out, sig*amp);
 }).add;
@@ -9,7 +8,6 @@ SynthDef(\soundIn, {
 SynthDef(\soundIn1, {
   |out=0, amp=1, in=0|
   var sig = SoundIn.ar(in);
-  sig = Compander.ar(sig, sig);
   Out.ar(out, sig*amp);
 }, metadata: (
   proxyChannels: 1,
@@ -52,5 +50,36 @@ SynthDef(\smoothFreq, {
     \freqMin: ControlSpec(20, 20000, \exp, 1),
     \freqMax: ControlSpec(20, 20000, \exp, 1),
     \threshold: ControlSpec(0.01, 0.99),
+  ),
+)).add;
+
+SynthDef(\vocode, {
+  |in=0, out=0, amp=1, pan=0, freq=146, smooth=1.0, lowCurve=4, freqMin=60, freqMax=1000, threshold=0.1, gate=1, atk=0.01, rel=0.3, curve=(-4)|
+  var detectedFreq, hasFreq, shift, env;
+  var sig = SoundIn.ar(in);
+  var detectedAmp = Amplitude.kr(sig, smooth, smooth);
+  // This is to crush small amplitude values closer to 0, to avoid noisy
+  // background when there's no mic input
+  amp = amp * IEnvGen.kr(Env([0,1], [threshold], [lowCurve]), detectedAmp);
+  env = amp * EnvGen.kr(Env.asr(atk, 1, rel, curve), gate: gate, doneAction: Done.freeSelf);
+  # detectedFreq, hasFreq = Tartini.kr(sig);
+  detectedFreq = Gate.kr(detectedFreq, hasFreq * (detectedFreq < freqMax) * (detectedFreq > freqMin) * (detectedAmp > threshold));
+  // Gate outputs 0 until it's triggered at least once, but that can cause
+  // problems downstream. This will make sure we never output a 0 detectedFreq.
+  detectedFreq = Select.kr(detectedFreq > 0, [50.midicps, detectedFreq]);
+  shift = (freq.cpsmidi - detectedFreq.cpsmidi).midiratio;
+  sig = PitchShift.ar(sig, \window.kr(0.02), shift, 0, \pitchDispersion.kr(0));
+  sig = env * Pan2.ar(sig, pan);
+  Out.ar(out, sig);
+}, metadata: (
+  proxyRate: \control,
+  specs: (
+    \freqMin: ControlSpec(20, 20000, \exp, 1),
+    \freqMax: ControlSpec(20, 20000, \exp, 1),
+    \threshold: ControlSpec(0.01, 0.99),
+    \smooth: ControlSpec(0.01, 2),
+    \lowCurve: ControlSpec(0, 8, step: 1),
+    \window: ControlSpec(0.01, 1, \exp),
+    \pitchDispersion: ControlSpec(0, 1, 2),
   ),
 )).add;

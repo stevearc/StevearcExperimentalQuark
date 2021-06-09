@@ -1,16 +1,16 @@
 TouchSynth {
   classvar masterGroup;
   var <name, <out=0, <group, <bus, <isRunning=false,
-    <store, <delayStore, <filterStore, <reverbStore,
-    synths, delaySynth, filterSynth, reverbSynth, monitorSynth;
+    <store, <delayStore, <filterStore, <reverbStore, <chorusStore,
+    synths, delaySynth, filterSynth, reverbSynth, chorusSynth, monitorSynth;
 
-  *hydrate { |name, store, delayStore, filterStore, reverbStore|
-    ^super.new.init(name, store, delayStore, filterStore, reverbStore);
+  *hydrate { |name, store, delayStore, filterStore, reverbStore, chorusStore|
+    ^super.new.init(name, store, delayStore, filterStore, reverbStore, chorusStore);
   }
   *new { |name=\default, synthName=\default, args=nil|
-    ^super.new.init(name, SynthDataStore(synthName, args ? []), nil, nil, nil);
+    ^super.new.init(name, SynthDataStore(synthName, args ? []));
   }
-  init { |theName, theStore, theDelayStore, theFilterStore, theReverbStore|
+  init { |theName, theStore, theDelayStore, theFilterStore, theReverbStore, theChorusStore|
     synths = IdentityDictionary.new;
     name = theName;
     store = theStore;
@@ -21,6 +21,8 @@ TouchSynth {
     filterStore.addDependant(this);
     reverbStore = theReverbStore ?? {FXReverbDataStore.new};
     reverbStore.addDependant(this);
+    chorusStore = theChorusStore ?? {FXChorusDataStore.new};
+    chorusStore.addDependant(this);
   }
 
   out_ { |theOut|
@@ -56,6 +58,14 @@ TouchSynth {
           \touchOSCReverb, store.enabled,
           \wet, store.wet,
           \room, store.room,
+        );
+      },
+      \fxchorus, {
+        chorusSynth = this.updateFXSynth(chorusSynth,
+          \touchOSCChorus, store.enabled,
+          \speed, store.speed,
+          \depth, store.depth,
+          \predelay, store.predelay,
         );
       },
       \synthData, {
@@ -163,12 +173,27 @@ TouchSynth {
         );
         ReplaceOut.ar(\out.kr(0), sig);
       }).add;
+      SynthDef(\touchOSCChorus, {
+        var sig = In.ar(\out.kr(0), 2);
+        var numDelays = 8;
+        var numOutChan = 2;
+        var mods = { |i|
+            FSinOsc.kr(\speed.kr(1) * rrand(0.9, 1.1),
+              \phase.kr(0) * i,
+              \depth.kr(0.001),
+              \predelay.kr(0.001));
+        } ! (numDelays * numOutChan);
+        sig = DelayL.ar(sig, 0.5, mods);
+        sig = Mix(sig.clump(numOutChan)) / numDelays;
+        ReplaceOut.ar(\out.kr(0), sig);
+      }).add;
       Server.default.sync;
       monitorSynth = Synth(\touchOSCMonitor, [\bus, bus, \out, out], group, \addToTail);
       store.markChanged;
       delayStore.markChanged;
       filterStore.markChanged;
       reverbStore.markChanged;
+      chorusStore.markChanged;
     }).start;
   }
 
@@ -183,6 +208,7 @@ TouchSynth {
     delaySynth = nil;
     filterSynth = nil;
     reverbSynth = nil;
+    chorusSynth = nil;
     monitorSynth = nil;
     isRunning = false;
   }
@@ -192,7 +218,8 @@ TouchSynth {
     stream <<< store << ",";
     stream <<< delayStore << ",";
     stream <<< filterStore << ",";
-    stream <<< reverbStore;
+    stream <<< reverbStore << ",";
+    stream <<< chorusStore;
     stream << ")";
   }
 

@@ -7,7 +7,7 @@ SuperSynth.setPadSynth(1,1,TouchSynth.hydrate('clap',SynthDataStore('clapOto309'
 SuperSynth.setPadSynth(1,2,TouchSynth.hydrate('hat',SynthDataStore('hihat1', [ 'rel', 0.13 ]),nil,nil,nil));
 SuperSynth.setPadSynth(1,3,TouchSynth.hydrate('openhat',SynthDataStore('hihat1', [ 'rel', 0.4 ]),nil,nil,nil));
 SuperSynth.setPadSynth(2,0,TouchSynth.hydrate('klank',SynthDataStore('klank', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(2,1,TouchSynth.hydrate('gong',SynthDataStore('prayerBell', [ 'freq', 46.249302838954, 'amp', 0.1 ]),nil,nil,nil));
+SuperSynth.setPadSynth(2,1,TouchSynth('vocode', 'vocode'));
 SuperSynth.setPadSynth(2,2,TouchSynth.hydrate('chime',SynthDataStore('prayerBell', [ 'freq', 2637.020455303, 'amp', 0.05 ]),nil,nil,nil));
 SuperSynth.setPadSynth(2,3,TouchSynth.hydrate('kalimba',SynthDataStore('samplerPlayBuf2', [ 'freq', 200, 'rel', 1.4, 'pitch', Buffer.new, 'buf', Buffer.new ]),nil,nil,nil));
 SuperSynth.setPadSynth(3,0,TouchSynth.hydrate('blip',SynthDataStore('blip', [  ]),nil,nil,nil));
