@@ -1,47 +1,30 @@
-FXDelayDataStore {
-  var <enabled, <quantize, <delayTime, <decayTime, <decayMul,
+FXDelayDataStore : FXDataStore {
+  var <quantize, <delayTime, <decayTime, <decayMul,
     <delayLabel, <decayLabel;
 
   *new { |enabled=false, quantize=true, delayTime=0.125, decayTime=2, decayMul=0.8|
-    var instance = super.newCopyArgs(enabled, quantize, delayTime, decayTime, decayMul);
-    instance.markChanged;
-    ^instance;
+    ^super.newCopyArgs(\fxdelay, enabled, quantize, delayTime, decayTime, decayMul).init;
+  }
+  init {
+    this.forceUpdate;
+    this.prAddSetters([\quantize, \decayMul])
   }
   storeArgs { ^[enabled, quantize, delayTime, decayTime, decayMul] }
-  storeOn { |stream|
-    if (enabled) {
-      super.storeOn(stream);
-    } {
-      stream <<< nil;
-    }
-  }
 
-  enabled_ { |newval|
-    if (newval != enabled) {
-      enabled = newval;
-      this.markChanged;
-    }
-  }
-  quantize_ { |newval|
-    quantize = newval;
-    this.markChanged;
-  }
   delayTime_ { |newval|
-    delayTime = newval;
-    decayTime = max(decayTime, delayTime);
-    this.markChanged;
+    this.setState({
+      delayTime = newval;
+      decayTime = max(decayTime, delayTime);
+    });
   }
   decayTime_ { |newval|
-    decayTime = newval;
-    delayTime = min(delayTime, decayTime);
-    this.markChanged;
-  }
-  decayMul_ { |newval|
-    decayMul = newval;
-    this.markChanged;
+    this.setState({
+      decayTime = newval;
+      delayTime = min(delayTime, decayTime);
+    });
   }
 
-  markChanged {
+  onPostStateChange {
     delayTime = max(delayTime, 1/32);
     decayTime = max(decayTime, 1/32);
     decayTime = max(delayTime, decayTime);
@@ -52,7 +35,6 @@ FXDelayDataStore {
       decayLabel = decayTime.round(0.01).asString;
       delayLabel = delayTime.round(0.01).asString;
     };
-    this.changed(\fxdelay);
   }
 
   prQuantize { |num|

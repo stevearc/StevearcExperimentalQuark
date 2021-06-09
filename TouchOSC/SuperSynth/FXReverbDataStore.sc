@@ -1,34 +1,11 @@
-FXReverbDataStore {
-  var <enabled, <wet, <room;
+FXReverbDataStore : FXDataStore {
+  var <wet, <room;
 
   *new { |enabled=false, wet=0.3, room=0.5|
-    ^super.newCopyArgs(enabled, wet, room);
+    ^super.newCopyArgs(\fxreverb, enabled, wet, room).init;
+  }
+  init {
+    this.prAddSetters([\wet, \room]);
   }
   storeArgs { ^[enabled, wet, room] }
-  storeOn { |stream|
-    if (enabled) {
-      super.storeOn(stream);
-    } {
-      stream <<< nil;
-    }
-  }
-
-  enabled_ { |newval|
-    if (newval != enabled) {
-      enabled = newval;
-      this.markChanged;
-    }
-  }
-  wet_ { |newval|
-    wet = newval;
-    this.markChanged;
-  }
-  room_ { |newval|
-    room = newval;
-    this.markChanged;
-  }
-
-  markChanged {
-    this.changed(\fxreverb);
-  }
 }

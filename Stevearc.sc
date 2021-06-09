@@ -75,6 +75,8 @@ SA {
     Spec.specs[\att] = Spec.specs[\atk];
     Spec.specs[\decay] = ControlSpec(0.001, 2, \exp);
     Spec.specs[\dec] = Spec.specs[\decay];
+    Spec.specs[\sustain] = ControlSpec(0, 4);
+    Spec.specs[\sus] = Spec.specs[\sustain];
     Spec.specs[\rel] = ControlSpec(0.001, 4, \exp);
     Spec.specs[\curve] = ControlSpec(-8, 8, \lin, 1);
     Spec.specs[\cAtk] = Spec.specs[\curve];
@@ -105,8 +107,8 @@ SA {
     Spec.specs[\formant] = ControlSpec(0, 8);
     // distortion FX
     Spec.specs[\dist] = ControlSpec(0, 1);
-    // overdrive distortion FX
-    Spec.specs[\drive] = ControlSpec(0, 5);
+    Spec.specs[\distortion] = ControlSpec(0, 1);
+    Spec.specs[\gain] = ControlSpec(1, 8);
     // wa-wa FX
     Spec.specs[\waCenter] = ControlSpec(40, 10000, \exp);
     Spec.specs[\waWidth] = ControlSpec(0, 0.8);

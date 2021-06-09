@@ -4,8 +4,8 @@ TouchControl : TouchOSCResponder {
     ^super.new.initTouchControl(store, readValue, path, onChange, onTouchStart, onTouchEnd);
   }
   *fromStore { |path, store, key, onTouchStart, onTouchEnd|
-    var readValue = {store.perform(key)};
-    var onChange = {|val| store.perform((key ++ '_').asSymbol, val)};
+    var readValue = { store.perform(key) };
+    var onChange = {|val| store.perform((key ++ '_').asSymbol, val) };
     ^super.new.initTouchControl(store, readValue, path, onChange, onTouchStart, onTouchEnd);
   }
   initTouchControl {
@@ -174,5 +174,59 @@ TouchControlRange : TouchControl {
     } {
       ^spec.unmap(value);
     }
+  }
+}
+
+TouchControlXY : TouchControl {
+  var <>specs;
+  *new { |path, store, readValue, specs, onChange, onTouchStart, onTouchEnd|
+    ^super.new(path, store, readValue, onChange, onTouchStart, onTouchEnd).init(specs);
+  }
+  *fromStore { |path, store, key, specs, onTouchStart, onTouchEnd|
+    ^super.fromStore(path, store, key, onTouchStart, onTouchEnd).init(specs);
+  }
+  init { |specs|
+    this.specs = specs.collect({ |spec|
+      if (spec.isArray) {
+        ControlSpec(*spec);
+      } {
+        spec;
+      }
+    });
+  }
+  convertFromClient { |values|
+    if (specs.isNil) {
+      ^values;
+    } {
+      ^specs.collect({ |spec, i| spec.map(values[i]) });
+    }
+  }
+  convertToClient { |values|
+    if (specs.isNil) {
+      ^values;
+    } {
+      ^specs.collect({ |spec, i| spec.unmap(values[i]) });
+    }
+  }
+  startImpl {
+    this.prAddFunc(path, { |msg|
+      var newval = this.convertFromClient([msg[1], msg[2]]);
+      clientValue = newval;
+      if (this.onChange.notNil) {
+        this.onChange.value(newval);
+      };
+    });
+    this.prAddTouchListener;
+    this.sync;
+  }
+  syncImpl { |forceUpdate|
+    // Only update the control when we're not touching it
+    if (isTouching.not) {
+      var value = readValue.value(store, path);
+      if (value != clientValue or: forceUpdate) {
+        clientValue = value;
+        clientAddr.sendMsg(path, *this.convertToClient(value));
+      };
+    };
   }
 }

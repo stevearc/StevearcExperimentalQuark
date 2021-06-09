@@ -1,16 +1,19 @@
 TouchSynth {
   classvar masterGroup;
   var <name, <out=0, <group, <bus, <isRunning=false,
-    <store, <delayStore, <filterStore, <reverbStore, <chorusStore,
-    synths, delaySynth, filterSynth, reverbSynth, chorusSynth, monitorSynth;
+    <store, <delayStore, <filterStore, <reverbStore, <chorusStore, <distStore,
+    synths, delaySynth, filterSynth, reverbSynth, chorusSynth, distSynth, monitorSynth;
 
-  *hydrate { |name, store, delayStore, filterStore, reverbStore, chorusStore|
-    ^super.new.init(name, store, delayStore, filterStore, reverbStore, chorusStore);
+  *hydrate { |name, store, delayStore, filterStore, reverbStore, chorusStore, distStore|
+    ^super.new.init(name, store, delayStore, filterStore, reverbStore, chorusStore, distStore);
   }
-  *new { |name=\default, synthName=\default, args=nil|
+  *new { |name=\default, synthName=nil, args=nil|
+    if (synthName.isNil) {
+      synthName = name;
+    };
     ^super.new.init(name, SynthDataStore(synthName, args ? []));
   }
-  init { |theName, theStore, theDelayStore, theFilterStore, theReverbStore, theChorusStore|
+  init { |theName, theStore, theDelayStore, theFilterStore, theReverbStore, theChorusStore, theDistStore|
     synths = IdentityDictionary.new;
     name = theName;
     store = theStore;
@@ -23,6 +26,8 @@ TouchSynth {
     reverbStore.addDependant(this);
     chorusStore = theChorusStore ?? {FXChorusDataStore.new};
     chorusStore.addDependant(this);
+    distStore = theDistStore ?? {FXDistortionDataStore.new};
+    distStore.addDependant(this);
   }
 
   out_ { |theOut|
@@ -66,6 +71,14 @@ TouchSynth {
           \speed, store.speed,
           \depth, store.depth,
           \predelay, store.predelay,
+        );
+      },
+      \fxdistortion, {
+        distSynth = this.replaceSynth(distSynth,
+          \touchOSCDistortion, store.enabled,
+          \distortion, store.distortion,
+          \wet, store.wet,
+          \gain, store.gain,
         );
       },
       \synthData, {
@@ -125,6 +138,22 @@ TouchSynth {
     };
   }
 
+  replaceSynth { |synth, name, enabled ...args|
+    if (enabled) {
+      if (synth.isNil) {
+        // TODO: will need to figure out fx ordering at some point
+        ^Synth(name, [\out, bus] ++ args, group, \addToHead);
+      } {
+        ^Synth.replace(synth, name, [\out, bus] ++ args, true);
+      };
+    } {
+      if (synth.notNil) {
+        synth.free;
+      }
+      ^nil;
+    };
+  }
+
   start {
     if (isRunning) {
       ^this;
@@ -156,9 +185,14 @@ TouchSynth {
       }).add;
       SynthDef(\touchOSCFilter, {
         var sig = In.ar(\out.kr(0), 2);
-        // Boost the volume on the lows when we're doing a LPF
-        var amp = \freq.kr.lincurve(60,440,1.5,1,-1);
-        var filter = BPF.ar(sig, \freq.kr, \width.kr, amp);
+        var freq = \freq.kr(0); // ranges from -1,1
+        var filter = SelectX.ar(
+          freq.linlin(-0.01,0.01, 0,2),
+          [
+            RLPF.ar(sig, freq.lincurve(-1,0, 50,9500,8), \width.kr(1)),
+            sig,
+            RHPF.ar(sig, freq.lincurve(0,1, 50,9500,8), \width.kr(1)),
+          ]);
         sig = XFade2.ar(sig, filter, \wet.kr.linlin(0,1,-1,1));
         ReplaceOut.ar(\out.kr(0), sig);
       }).add;
@@ -187,13 +221,24 @@ TouchSynth {
         sig = Mix(sig.clump(numOutChan)) / numDelays;
         ReplaceOut.ar(\out.kr(0), sig);
       }).add;
+      SynthDef(\touchOSCDistortion, {
+        var sig = In.ar(\out.kr(0), 2);
+        var boosted = \gain.kr(1) * sig;
+        var distortion = \distortion.kr(1).linlin(0,1,-1,1);
+        var dist = Select.ar(distortion > 0,
+          [boosted.clip(distortion, 1),
+          boosted.clip(-1*distortion).abs]) / \gain.kr(1);
+        sig = XFade2.ar(sig, dist, \wet.kr(1).linlin(0,1,-1,1));
+        ReplaceOut.ar(\out.kr(0), sig);
+      }).add;
       Server.default.sync;
       monitorSynth = Synth(\touchOSCMonitor, [\bus, bus, \out, out], group, \addToTail);
       store.markChanged;
-      delayStore.markChanged;
-      filterStore.markChanged;
-      reverbStore.markChanged;
-      chorusStore.markChanged;
+      delayStore.forceUpdate;
+      filterStore.forceUpdate;
+      reverbStore.forceUpdate;
+      chorusStore.forceUpdate;
+      distStore.forceUpdate;
     }).start;
   }
 
@@ -209,6 +254,7 @@ TouchSynth {
     filterSynth = nil;
     reverbSynth = nil;
     chorusSynth = nil;
+    distSynth = nil;
     monitorSynth = nil;
     isRunning = false;
   }
@@ -219,7 +265,8 @@ TouchSynth {
     stream <<< delayStore << ",";
     stream <<< filterStore << ",";
     stream <<< reverbStore << ",";
-    stream <<< chorusStore;
+    stream <<< chorusStore << ",";
+    stream <<< distStore;
     stream << ")";
   }
 
