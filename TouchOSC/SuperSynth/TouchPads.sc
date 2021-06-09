@@ -1,13 +1,13 @@
 TouchPads : TouchOSCResponder {
-  classvar numRows=4, numCols=4;
+  classvar numPads=16;
   var ui, synths, <store, <loopCtl;
   *new {
     ^super.new.init;
   }
   init {
-    store = PadsDataStore.new(numRows, numCols);
+    store = PadsDataStore.new(numPads);
     store.addDependant(this);
-    synths = Array2D.new(numRows, numCols);
+    synths = Array.fill(numPads);
     ui = TouchPadsUI.new;
     ui.store = store;
     this.prAddChild(ui);
@@ -24,12 +24,10 @@ TouchPads : TouchOSCResponder {
   }
 
   update { |store, what|
-    store.padsDown.rowsDo { |row, i|
-      row.do { |down, j|
-        var touchSynth = store.padTouchSynths.at(i, j);
-        if (touchSynth.notNil) {
-          synths.put(i, j, touchSynth.updateSynth(synths.at(i,j), down));
-        }
+    store.padsDown.do { |down, i|
+      var touchSynth = store.padTouchSynths[i];
+      if (touchSynth.notNil) {
+        synths[i] = touchSynth.updateSynth(synths[i], down);
       }
     };
   }
@@ -49,22 +47,13 @@ TouchPadsUI : TouchStoreUI {
   getChildren {
     var children = [
       TouchControlLabel.fromStore('/synthName', store, \selectedSynthName),
-      TouchControlGrid.d2("/pads/%/%", [4,4], {|path, row, col|
-        TouchControlButton(path, store, {|down| store.setPadState(row, col, down) });
+      TouchControlGrid.d1("/pads/%", 16, {|path, i|
+        TouchControlButton(path, store, {|down| store.setPadState(i, down) });
       }),
-      TouchControlGrid.d2("/pads/label/%/%", [4,4], {|path, row, col|
-        TouchControlLabel(path, store, {|store| store.padTouchSynths.at(row, col).name});
+      TouchControlGrid.d1("/pads/label/%", 16, {|path, i|
+        TouchControlLabel(path, store, {|store| store.padTouchSynths[i].name});
       });
     ];
-    store.padTouchSynths.rowsDo { |row, i|
-      row.size.do { |j|
-        children = children.add(TouchControlLabel(
-          "/pads/%/%/label".format(i+1,j+1),
-          store,
-          {|store| store.padTouchSynths.at(i, j).name},
-        ));
-      }
-    };
     ^children;
   }
 }

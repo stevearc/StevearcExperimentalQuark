@@ -18,9 +18,9 @@ SuperSynth : TouchOSCResponder {
     this.prAddChild(pads);
   }
 
-  *setPadSynth { |row, col, touchSynth| ^this.default.setPadSynth(row,col,touchSynth) }
-  setPadSynth { |row, col, touchSynth|
-    pads.store.setPadSynth(row, col, touchSynth);
+  *setPadSynth { |i, touchSynth| ^this.default.setPadSynth(i,touchSynth) }
+  setPadSynth { |i, touchSynth|
+    pads.store.setPadSynth(i, touchSynth);
   }
 
   *setLoop { |i, recording| ^this.default.setLoop(i, recording) }
@@ -70,12 +70,10 @@ SuperSynth : TouchOSCResponder {
   *serializeSynths { ^this.default.serializeSynths }
   serializeSynths {
     ^String.streamContents({ |stream|
-      pads.store.padTouchSynths.rowsDo { |row, i|
-        row.do { |touchSynth, j|
-          stream << this.class.name << ".setPadSynth(" << i << "," << j << ",";
-          touchSynth.storeOn(stream);
-          stream << ");\n";
-        };
+      pads.store.padTouchSynths.do { |touchSynth, i|
+        stream << this.class.name << ".setPadSynth(" << i << ",";
+        touchSynth.storeOn(stream);
+        stream << ");\n";
       };
     });
   }

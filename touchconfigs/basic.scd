@@ -1,19 +1,19 @@
-SuperSynth.setPadSynth(0,0,TouchSynth.hydrate('kick808',SynthDataStore('kick808', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(0,1,TouchSynth.hydrate('ringz',SynthDataStore('kickRingz', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(0,2,TouchSynth.hydrate('oto309',SynthDataStore('kick_oto309', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(0,3,TouchSynth.hydrate('sos',SynthDataStore('sosKick', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(1,0,TouchSynth.hydrate('snare',SynthDataStore('snare', [ 'amp', 0.3 ]),nil,nil,nil));
-SuperSynth.setPadSynth(1,1,TouchSynth.hydrate('clap',SynthDataStore('clapOto309', [ 'rel', 0.4, 'amp', 0.2 ]),nil,nil,nil));
-SuperSynth.setPadSynth(1,2,TouchSynth.hydrate('hat',SynthDataStore('hihat1', [ 'rel', 0.13 ]),nil,nil,nil));
-SuperSynth.setPadSynth(1,3,TouchSynth.hydrate('openhat',SynthDataStore('hihat1', [ 'rel', 0.4 ]),nil,nil,nil));
-SuperSynth.setPadSynth(2,0,TouchSynth.hydrate('klank',SynthDataStore('klank', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(2,1,TouchSynth('vocode', 'vocode'));
-SuperSynth.setPadSynth(2,2,TouchSynth.hydrate('chime',SynthDataStore('prayerBell', [ 'freq', 2637.020455303, 'amp', 0.05 ]),nil,nil,nil));
-SuperSynth.setPadSynth(2,3,TouchSynth.hydrate('kalimba',SynthDataStore('samplerPlayBuf2', [ 'freq', 200, 'rel', 1.4, 'pitch', Buffer.new, 'buf', Buffer.new ]),nil,nil,nil));
-SuperSynth.setPadSynth(3,0,TouchSynth.hydrate('blip',SynthDataStore('blip', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(3,1,TouchSynth.hydrate('rav',SynthDataStore('samplerPlayBuf1', [ 'freq', 100, 'rel', 4, 'amp', 0.8, 'pitch', Buffer.new, 'buf', Buffer.new ]),nil,nil,nil));
-SuperSynth.setPadSynth(3,2,TouchSynth.hydrate('sawbass',SynthDataStore('sawbass', [  ]),nil,nil,nil));
-SuperSynth.setPadSynth(3,3,TouchSynth.hydrate('ikeda',SynthDataStore('ikedaBass', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(0,TouchSynth.hydrate('kick808',SynthDataStore('kick808', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(1,TouchSynth.hydrate('ringz',SynthDataStore('kickRingz', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(2,TouchSynth.hydrate('oto309',SynthDataStore('kick_oto309', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(3,TouchSynth.hydrate('sos',SynthDataStore('sosKick', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(4,TouchSynth.hydrate('snare',SynthDataStore('snare', [ 'amp', 0.3 ]),nil,nil,nil));
+SuperSynth.setPadSynth(5,TouchSynth.hydrate('clap',SynthDataStore('clapOto309', [ 'rel', 0.4, 'amp', 0.2 ]),nil,nil,nil));
+SuperSynth.setPadSynth(6,TouchSynth.hydrate('hat',SynthDataStore('hihat1', [ 'rel', 0.13 ]),nil,nil,nil));
+SuperSynth.setPadSynth(7,TouchSynth.hydrate('openhat',SynthDataStore('hihat1', [ 'rel', 0.4 ]),nil,nil,nil));
+SuperSynth.setPadSynth(8,TouchSynth.hydrate('klank',SynthDataStore('klank', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(9,TouchSynth('vocode', 'vocode'));
+SuperSynth.setPadSynth(10,TouchSynth.hydrate('chime',SynthDataStore('prayerBell', [ 'freq', 2637.020455303, 'amp', 0.05 ]),nil,nil,nil));
+SuperSynth.setPadSynth(11,TouchSynth.hydrate('kalimba',SynthDataStore('samplerPlayBuf2', [ 'freq', 200, 'rel', 1.4, 'pitch', Buffer.new, 'buf', Buffer.new ]),nil,nil,nil));
+SuperSynth.setPadSynth(12,TouchSynth.hydrate('blip',SynthDataStore('blip', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(13,TouchSynth.hydrate('rav',SynthDataStore('samplerPlayBuf1', [ 'freq', 100, 'rel', 4, 'amp', 0.8, 'pitch', Buffer.new, 'buf', Buffer.new ]),nil,nil,nil));
+SuperSynth.setPadSynth(14,TouchSynth.hydrate('sawbass',SynthDataStore('sawbass', [  ]),nil,nil,nil));
+SuperSynth.setPadSynth(15,TouchSynth.hydrate('ikeda',SynthDataStore('ikedaBass', [  ]),nil,nil,nil));
 SuperSynth.setLoop(0,LoopRecording(8.0, [ ( 'args': [ 'rel', 0.13 ], 'id': '24:1219', 'beat': 0.0, 'synthName': 'hat',
   'type': 'note_start' ), ( 'args': [  ], 'synthName': 'ringz', 'beat': 0.0, 'type': 'note_start',
   'id': '1126' ), ( 'synthName': 'hat', 'beat': 0.25, 'id': '24:1219', 'type': 'note_end' ), ( 'args': [ 'rel', 0.13 ], 'id': '24:1220', 'beat': 0.5, 'synthName': 'hat',

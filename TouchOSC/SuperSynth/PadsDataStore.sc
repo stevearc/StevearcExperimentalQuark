@@ -1,13 +1,12 @@
 PadsDataStore {
   var <enabled=false, <padsDown, <padTouchSynths, <selectedSynth;
-  *new { |numRows, numCols|
-    ^super.new.init(numRows, numCols);
+  *new { |numPads|
+    ^super.new.init(numPads);
   }
-  init { |numRows, numCols|
-    var numPads = numRows * numCols;
-    padsDown = Array2D.fromArray(numRows, numCols, Array.fill(numPads, false));
-    padTouchSynths = Array2D.fromArray(numRows, numCols, Array.fill(numPads, {TouchSynth.new}));
-    selectedSynth = padTouchSynths.at(0,0);
+  init { |numPads|
+    padsDown = Array.fill(numPads, false);
+    padTouchSynths = Array.fill(numPads, {TouchSynth.new});
+    selectedSynth = padTouchSynths[0];
   }
   getSynth { |name|
     padTouchSynths.do { |synth|
@@ -18,14 +17,14 @@ PadsDataStore {
     ^nil;
   }
   selectedSynthName { ^selectedSynth.name }
-  setPadSynth { |row, col, touchSynth|
+  setPadSynth { |i, touchSynth|
     if (enabled) {
-      padTouchSynths.at(row, col).stop;
+      padTouchSynths[i].stop;
     };
     if (touchSynth.class == Symbol) {
       touchSynth = TouchSynth(touchSynth, touchSynth);
     };
-    padTouchSynths.put(row, col, touchSynth);
+    padTouchSynths[i] = touchSynth;
     this.markChanged;
   }
   enabled_ { |newval|
@@ -34,8 +33,8 @@ PadsDataStore {
       this.markChanged;
     };
   }
-  setPadState { |row, col, down|
-    padsDown.put(row, col, down);
+  setPadState { |i, down|
+    padsDown[i] = down;
     this.markChanged;
   }
   markChanged {
@@ -43,18 +42,14 @@ PadsDataStore {
       padTouchSynths.do { |touchSynth|
         touchSynth.start;
       };
-      padsDown.rowsDo { |row, i|
-        row.do { |down, j|
-          if (down) {
-            selectedSynth = padTouchSynths.at(i, j);
-          };
+      padsDown.do { |down, i|
+        if (down) {
+          selectedSynth = padTouchSynths[i];
         };
       };
     } {
-      padsDown.rowsDo { |row|
-        row.size.do { |i|
-          row[i] = false;
-        };
+      padsDown.size.do { |i|
+        padsDown[i] = false;
       };
       padTouchSynths.do { |touchSynth|
         touchSynth.stop;
