@@ -1,35 +1,3 @@
-KeyboardDataStore {
-  classvar <keysPerKeyboard=20;
-  var <octave=4, <octaveLabel="C4", <pitchBend=0, <keysPlaying;
-  *new {
-    ^super.new.init;
-  }
-  init {
-    keysPlaying = Array.fill(keysPerKeyboard, false);
-  }
-  octave_ { |newval|
-    var newOctave = newval.round(1).asInteger;
-    if (octave != newOctave) {
-      octave = newOctave;
-      this.markChanged;
-    }
-  }
-  pitchBend_ { |newval|
-    pitchBend = newval;
-    this.markChanged;
-  }
-  setKey { |idx, playing|
-    if (playing != keysPlaying[idx]) {
-      keysPlaying[idx] = playing;
-      this.markChanged;
-    }
-  }
-  markChanged {
-    octaveLabel = "C%".format(octave);
-    this.changed(\keyboard);
-  }
-}
-
 TouchKeyboard : TouchOSCResponder {
   classvar rootNote;
   var <id, <>touchSynth, store, ui, synths;
@@ -66,7 +34,7 @@ TouchKeyboard : TouchOSCResponder {
     KeyboardDataStore.keysPerKeyboard.do { |i|
       store.keysPlaying[i] = false;
     };
-    store.markChanged;
+    store.forceUpdate;
   }
 }
 

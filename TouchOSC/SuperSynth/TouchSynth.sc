@@ -37,7 +37,7 @@ TouchSynth {
     };
   }
 
-  update { |store, what|
+  update { |store, what, oldstore|
     if (isRunning.not) {
       ^this;
     };
@@ -223,17 +223,24 @@ TouchSynth {
       }).add;
       SynthDef(\touchOSCDistortion, {
         var sig = In.ar(\out.kr(0), 2);
-        var boosted = \gain.kr(1) * sig;
-        var distortion = \distortion.kr(1).linlin(0,1,-1,1);
+        var gain = \gain.kr(0).linlin(0,1,1,0.01);
+        var distortion = \distortion.kr(0).linlin(0,1,-0.9,1);
         var dist = Select.ar(distortion > 0,
-          [boosted.clip(distortion, 1),
-          boosted.clip(-1*distortion).abs]) / \gain.kr(1);
+          // Bring the clipping plane closer to 0 as distortion approaches -1
+          [sig.clip2(max(gain+distortion*gain, 0.01)),
+          // For distortion > 0, only affect the negative side of the signal
+          Select.ar(sig > 0, [
+            // Gradually map negative signal values to abs value
+            sig.linlin(-1,0,distortion.linlin(0,1,-1,1),0).clip2(gain),
+            sig,
+          ])
+        ]);
         sig = XFade2.ar(sig, dist, \wet.kr(1).linlin(0,1,-1,1));
         ReplaceOut.ar(\out.kr(0), sig);
       }).add;
       Server.default.sync;
       monitorSynth = Synth(\touchOSCMonitor, [\bus, bus, \out, out], group, \addToTail);
-      store.markChanged;
+      store.forceUpdate;
       delayStore.forceUpdate;
       filterStore.forceUpdate;
       reverbStore.forceUpdate;

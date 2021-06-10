@@ -108,7 +108,7 @@ SA {
     // distortion FX
     Spec.specs[\dist] = ControlSpec(0, 1);
     Spec.specs[\distortion] = ControlSpec(0, 1);
-    Spec.specs[\gain] = ControlSpec(1, 8);
+    Spec.specs[\gain] = ControlSpec(0, 1);
     // wa-wa FX
     Spec.specs[\waCenter] = ControlSpec(40, 10000, \exp);
     Spec.specs[\waWidth] = ControlSpec(0, 0.8);

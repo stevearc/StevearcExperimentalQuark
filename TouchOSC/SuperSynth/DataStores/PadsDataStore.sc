@@ -1,12 +1,13 @@
-PadsDataStore {
+PadsDataStore : DataStore {
   var <enabled=false, <padsDown, <padTouchSynths, <selectedSynth;
   *new { |numPads|
-    ^super.new.init(numPads);
+    ^super.newCopyArgs(\pads).init(numPads);
   }
   init { |numPads|
     padsDown = Array.fill(numPads, false);
     padTouchSynths = Array.fill(numPads, {TouchSynth.new});
     selectedSynth = padTouchSynths[0];
+    this.prAddSetters([\enabled]);
   }
   getSynth { |name|
     padTouchSynths.do { |synth|
@@ -25,19 +26,13 @@ PadsDataStore {
       touchSynth = TouchSynth(touchSynth, touchSynth);
     };
     padTouchSynths[i] = touchSynth;
-    this.markChanged;
-  }
-  enabled_ { |newval|
-    if (newval != enabled) {
-      enabled = newval;
-      this.markChanged;
-    };
+    this.forceUpdate;
   }
   setPadState { |i, down|
     padsDown[i] = down;
-    this.markChanged;
+    this.forceUpdate;
   }
-  markChanged {
+  onPostStateChange {
     if (enabled) {
       padTouchSynths.do { |touchSynth|
         touchSynth.start;
@@ -55,6 +50,5 @@ PadsDataStore {
         touchSynth.stop;
       };
     };
-    this.changed(\pads);
   }
 }

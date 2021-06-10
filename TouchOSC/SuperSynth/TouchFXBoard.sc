@@ -110,7 +110,7 @@ TouchFXDistortion : TouchStoreUI {
       TouchControlToggle.fromStore('/fx/distortion/toggle', store, \enabled),
       TouchControlRange.fromStore('/fx/distortion/wet', store, \wet),
       TouchControlRange.fromStore('/fx/distortion/distortion', store, \distortion),
-      TouchControlRange.fromStore('/fx/distortion/gain', store, \gain, [1,8]),
+      TouchControlRange.fromStore('/fx/distortion/gain', store, \gain),
     ];
   }
 }

@@ -1,4 +1,4 @@
-SynthDataStore {
+SynthDataStore : DataStore {
   classvar blacklist;
   var <synthName, <args, controls=#[], specs=#[];
 
@@ -6,14 +6,12 @@ SynthDataStore {
     blacklist = Set[\freq, \pan, \out, \in, \buf, \bus, \gate];
   }
   *new { |synthName, args=nil|
-    ^super.newCopyArgs(synthName, args ? []);
+    ^super.newCopyArgs(\synthData, synthName, args ? []).init;
+  }
+  init {
+    this.prAddSetters([\args]);
   }
   storeArgs { ^[synthName, args] }
-
-  args_ { |newval|
-    args = newval;
-    this.markChanged;
-  }
 
   numControls {
     ^controls.size;
@@ -53,13 +51,13 @@ SynthDataStore {
     args.pairsDo { |key, value, i|
       if (key == control.name) {
         args[i+1] = newval;
-        this.markChanged;
+        this.forceUpdate;
         ^this;
       };
     };
     args = args.add(control.name);
     args = args.add(newval);
-    this.markChanged;
+    this.forceUpdate;
   }
   resetValue { |i|
     var control = controls[i];
@@ -71,11 +69,11 @@ SynthDataStore {
     if (idx.notNil) {
       args.removeAt(idx+1);
       args.removeAt(idx);
-      this.markChanged;
+      this.forceUpdate;
     };
   }
 
-  markChanged {
+  onPostStateChange {
     var synthDesc = SynthDescLib.global[synthName];
     var curArgs = IdentityDictionary.new;
     args.pairsDo { |key, val|
@@ -98,6 +96,5 @@ SynthDataStore {
         };
       };
     };
-    this.changed(\synthData);
   }
 }

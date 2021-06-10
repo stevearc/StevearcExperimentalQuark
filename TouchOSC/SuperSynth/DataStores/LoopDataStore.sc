@@ -1,25 +1,24 @@
-LoopDataStore {
+LoopDataStore : DataStore {
   var <tempoString, <recordBars=2, <>quantize=true,
     <channelStores;
   *new { |numChannels|
-    ^super.new.init(numChannels);
+    ^super.newCopyArgs(\loop).init(numChannels);
   }
   init { |numChannels|
     channelStores = Array.fill(numChannels, {LoopChannelDataStore.new});
     channelStores.do { |channelStore|
       channelStore.addDependant(this);
     };
-    this.markChanged;
+    this.forceUpdate;
   }
   update { |store, what|
-    this.markChanged;
+    this.forceUpdate;
   }
   beatsPerBar {
     ^TempoClock.beatsPerBar;
   }
   recordBars_ { |newval|
-    recordBars = newval.round.asInteger;
-    this.markChanged;
+    this.setState(\recordBars, newval.round.asInteger);
   }
   barsLabel {
     ^"% bars".format(recordBars);
@@ -29,7 +28,7 @@ LoopDataStore {
   }
   bpm_ { |bpm|
     TempoClock.tempo = bpm.asInteger / 60;
-    this.markChanged;
+    this.forceUpdate;
   }
   recording {
     ^channelStores.any { |channelStore| channelStore.recording };
@@ -42,7 +41,7 @@ LoopDataStore {
     };
     ^"";
   }
-  markChanged {
+  onPostStateChange {
     tempoString = case
       { this.bpm <= 60 } { "largo" }
       { this.bpm <= 66 } { "larghetto" }
@@ -52,6 +51,5 @@ LoopDataStore {
       { this.bpm <= 168 } { "allegro" }
       { this.bpm <= 200 } { "presto" }
       { this.bpm > 200 } { "prestissimo" };
-    this.changed(\loop);
   }
 }
